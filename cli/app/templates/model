@@ -1,0 +1,6 @@
+import { Model } from 'pretty-api';
+
+@Model(${decoratorData})
+class %{name} {}
+
+export default %{name};

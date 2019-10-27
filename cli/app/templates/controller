@@ -1,0 +1,6 @@
+import { Controller } from 'pretty-api';
+
+@Controller()
+class %{name} {}
+
+export default %{name};
