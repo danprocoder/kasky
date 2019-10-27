@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const databaseCommands = /^(migrate)/;
-const fileMakerCommands = /^(make:controller|make:migration|make:model)/;
-const appCommands = /^(start-server|init)/;
+const databaseCommands = /^migrate$/;
+const fileMakerCommands = /^make:(controller|migration|model|middleware)$/;
+const appCommands = /^(start-server|init)$/;
 
 const args = process.argv.slice(2);
 if (args.length >= 1) {

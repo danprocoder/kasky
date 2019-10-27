@@ -15,8 +15,9 @@ module.exports = function(table) {
     },
 
     insert(data) {
+      console.log('Inserting', data);
       if (data instanceof Array) {
-        return this.insertMany(table, data);
+        return this._insertMany(data);
       }
 
       const fields = [];
@@ -32,6 +33,25 @@ module.exports = function(table) {
       return this.run('INSERT INTO `' + table + '`(' + escapedFields + ')VALUES(' + questionMarks + ')', ...values)
         .then(() => this.run('SELECT * FROM `' + table + '` WHERE id=LAST_INSERT_ID()'))
         .then(result => result.getFirstRow());
+    },
+
+    _insertMany(data) {
+      const fields = Object.keys(data[0]);
+      const values = [];
+
+      data.forEach((item) => {
+        let valueItems = [];
+
+        fields.forEach(key => {
+          valueItems.push(`${pool.escape(item[key])}`);
+        });
+        
+        values.push('(' + valueItems.join(',') + ')');
+      });
+      
+      const escapedFields = fields.map(field => '`' + field + '`').join(',');
+      const query = `INSERT INTO \`${table}\`(${escapedFields})VALUES${values.join(',')}`
+      return this.run(query);
     }
   }
 }

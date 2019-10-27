@@ -1,0 +1,11 @@
+import { Middleware } from 'pretty-api';
+
+@Middleware()
+class %{name} {
+
+  handle(req, res, next) {
+    next();
+  }
+}
+
+export default %{name};

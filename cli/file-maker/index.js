@@ -99,5 +99,8 @@ exports.process = function(command, args) {
     case 'make:migration':
       makeMigrationFile(args);
       break;
+
+    case 'make:middleware':
+      break;
   }
 }
