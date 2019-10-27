@@ -21,7 +21,7 @@ function getInjectableValue(p1) {
 
 function parseValueInjections(value) {
   const injectionSyntax = /\{([a-zA-Z\.]+)\}/;
-  
+
   while (value.match(injectionSyntax)) {
     value = value
         .replace(injectionSyntax, function(match, p1) {
@@ -35,5 +35,6 @@ function parseValueInjections(value) {
 }
 
 exports.get = function(key) {
-  return parseValueInjections(config[key]);
+  const value = config[key];
+  return typeof value === 'string' ? parseValueInjections(config[key]) : value;
 }

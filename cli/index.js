@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const databaseCommands = /^(migrate) /;
-const appCommands = /^(init|make:controller|make:migration|make:model)/;
+const databaseCommands = /^(migrate)/;
+const fileMakerCommands = /^(init|make:controller|make:migration|make:model)/;
+const appCommands = /^(start-server)/;
 
 const args = process.argv.slice(2);
 if (args.length >= 1) {
@@ -10,6 +11,8 @@ if (args.length >= 1) {
 
   if (command.match(databaseCommands)) {
     resolver = require('./database');
+  } else if (command.match(fileMakerCommands)) {
+    resolver = require('./file-maker');
   } else if (command.match(appCommands)) {
     resolver = require('./app');
   } else {

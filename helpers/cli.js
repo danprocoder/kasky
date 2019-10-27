@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const package = require('../package.json');
 
 /**
@@ -13,5 +14,5 @@ exports.extractParam = function(args, key) {
 };
 
 exports.log = function(...message) {
-  console.log(package.name + ':', ...message);
+  console.log(chalk.gray(package.name) + ':', ...message);
 };

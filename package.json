@@ -9,7 +9,15 @@
   "author": "Daniel Austin",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
+    "@babel/runtime": "^7.6.3",
     "chalk": "^2.4.2",
+    "glob": "^7.1.5",
     "mysql2": "^2.0.0"
   },
   "bin": "cli/index.js"

@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require('url');
-const appLoader = require('./app-loader');
+const os = require('os');
 const route = require('./route');
 const Request = require('../helpers/request');
 const Response = require('../helpers/response');
@@ -33,58 +33,60 @@ MiddlewareHandler.prototype.run = function() {
 }
 
 function Server(config) {
-  let server;
+  this.config = config;
+  this.server = null;
+}
 
-  return {
-    _onHttpRequest(req, res) {
-      let data = [];
+Server.prototype._onHttpRequest = function(req, res) {
+  let data = [];
 
-      req.on('data', chunk => {
-        data.push(chunk);
-      });
+  req.on('data', chunk => {
+    data.push(chunk);
+  });
 
-      req.on('end', () => {
-        const { pathname, query } = url.parse(req.url);
-  
-        const resolver = route.getRouteHandler(req.method, pathname);
-        if (resolver) {
-          const request = new Request(req, data.toString());
-          const response = new Response(res);
-          // Run middlewares
-          if (resolver.middlewares.length > 0) {
-            new MiddlewareHandler(
-              resolver.middlewares,
+  req.on('end', () => {
+    const { pathname, query } = url.parse(req.url);
+
+    const resolver = route.getRouteHandler(req.method, pathname);
+    if (resolver) {
+      const request = new Request(req, data.toString());
+      const response = new Response(res);
+      // Run middlewares
+      if (resolver.middlewares.length > 0) {
+        new MiddlewareHandler(
+          resolver.middlewares,
+          request,
+          response,
+          function() {
+            resolver.method(
               request,
-              response,
-              function() {
-                resolver.method(
-                  request,
-                  response
-                );
-              }
-            ).run();
-          } else {
-            resolver.method(request, response);
+              response
+            );
           }
-        } else {
-          res.writeHead(404);
-          res.write(`Unable to resolve ${req.method} ${pathname}`);
-          res.end();
-        }
-      });
-    },
- 
-    start(callback) {
-      appLoader.loadApp();
-      
-      server = http.createServer(this._onHttpRequest)
-        .listen(config.port);
-
-      callback();
+        ).run();
+      } else {
+        resolver.method(request, response);
+      }
+    } else {
+      res.writeHead(404);
+      res.write(`Unable to resolve ${req.method} ${pathname}`);
+      res.end();
     }
-  };
+  });
 };
-module.exports = Server;
+
+Server.prototype.start = function(callback) {
+  this.server = http
+    .createServer(this._onHttpRequest)
+    .listen(this.config.port);
+
+  callback({
+    host: os.hostname(),
+    port: this.server.address().port,
+  });
+};
+
+exports.Server = Server;
 
 process.on('SIGINT', function() {
   process.exit();

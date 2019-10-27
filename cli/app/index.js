@@ -1,64 +1,27 @@
-const path = require('path');
-const fs = require('fs');
 const chalk = require('chalk');
-const package = require('../../package.json');
-const config = require('../../core/config');
-const template = require('../../helpers/template');
-const string = require('../../helpers/string');
+const appLoader = require('../../core/app-loader');
+const server = require('../../core/server');
 const cli = require('../../helpers/cli');
-
-/**
- * Called by make:controller command to create a controller file.
- * 
- * @param {array} args Command line arguments after make:controller.
- */
-function makeControllerFile(args) {
-  const name = cli.extractParam(args, 'name');
-  const fileName = string.camelCaseToFilename(name) + '.js';
-  const controllersPath = config.get('controllersPath');
-  fs.mkdirSync(controllersPath, { recursive: true });
-
-  cli.log('Generating', path.join(controllersPath, fileName));
-
-  template.insertFile(
-    path.join(__dirname, 'templates/controller'),
-    path.join(controllersPath, fileName),
-    { package: package.name, name }
-  );
-
-  cli.log(chalk.green('Generated'), path.join(controllersPath, fileName));
-}
-
-function makeModelFile(args) {
-  const name = cli.extractParam(args, 'name');
-  const table = cli.extractParam(args, 'table');
-  const fileName = string.camelCaseToFilename(name) + '.js';
-  const modelsPath = config.get('modelsPath');
-  fs.mkdirSync(modelsPath, { recursive: true });
-
-  cli.log('Generating', path.join(modelsPath, fileName));
-
-  template.insertFile(
-    path.join(__dirname, 'templates/model'),
-    path.join(modelsPath, fileName),
-    {
-      package: package.name,
-      name,
-      decoratorData: table ? `{\r\n  table: '${table}'\r\n}` : '',
-    }
-  );
-  
-  cli.log(chalk.green('Generated'), path.join(modelsPath, fileName));
-}
 
 exports.process = function(command, args) {
   switch (command) {
-    case 'make:controller':
-      makeControllerFile(args)
-      break;
+    case 'start-server':
+      cli.log('Loading app..');
 
-    case 'make:model':
-      makeModelFile(args);
+      appLoader.loadApp()
+        .then(() => {
+          cli.log('Starting server...');
+
+          let port = cli.extractParam(args, 'port');
+          if (!port) {
+            port = process.env.PORT || 0;
+          }
+          new server.Server({ port })
+            .start((options) => {
+              cli.log('Server running at', chalk.green(`127.0.0.1:${options.port}`));
+            });
+        });
+
       break;
   }
-}
+};
