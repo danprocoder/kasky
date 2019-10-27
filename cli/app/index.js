@@ -32,6 +32,10 @@ function Project(name) {
       target: 'src/app.js',
       template: 'src/app.template.js'
     },
+    {
+      target: '.gitignore',
+      template: '.gitignore.template'
+    }
   ];
 
   // Create folders.
