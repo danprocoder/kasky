@@ -9,6 +9,7 @@
   "author": "Daniel Austin",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.2",
     "mysql2": "^2.0.0"
   },
   "bin": "cli/index.js"

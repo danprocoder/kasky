@@ -1,53 +1,64 @@
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+const chalk = require('chalk');
+const package = require('../../package.json');
 const config = require('../../core/config');
+const template = require('../../helpers/template');
+const string = require('../../helpers/string');
+const cli = require('../../helpers/cli');
 
-function camelCaseToFilename(name) {
-  return name
-    .replace(/[A-Z][a-z]/g, function(match) {
-      return '-' + match;
-    })
-    .replace(/([a-z])([A-Z])/g, function(match, p1, p2) {
-      return p1 + '-' + p2;
-    })
-    .replace(/^\-|\-$/g, '')
-    .toLowerCase();
-}
-
-function replaceVars(templatePath, vars) {
-  return templatePath.replace(/%\{([a-zA-Z]+)\}/g, function(match, varName) {
-    const value = vars[varName];
-    return value || match;
-  });
-}
-
-function insertTemplateFile(templatePath, targetFilepath, values={}) {
-  const template = fs.readFileSync(templatePath, { encoding: 'utf8' });
-  
-  fs.writeFileSync(
-    targetFilepath,
-    replaceVars(template, values),
-    'utf8'
-  );
-};
-
-function makeController(args) {
-  const name = args.find(arg => arg.match(/^--name=/)).substr(7);
-  const fileName = camelCaseToFilename(name) + '.js';
+/**
+ * Called by make:controller command to create a controller file.
+ * 
+ * @param {array} args Command line arguments after make:controller.
+ */
+function makeControllerFile(args) {
+  const name = cli.extractParam(args, 'name');
+  const fileName = string.camelCaseToFilename(name) + '.js';
   const controllersPath = config.get('controllersPath');
+  fs.mkdirSync(controllersPath, { recursive: true });
 
-  insertTemplateFile(
+  cli.log('Generating', path.join(controllersPath, fileName));
+
+  template.insertFile(
     path.join(__dirname, 'templates/controller'),
     path.join(controllersPath, fileName),
-    { name }
+    { package: package.name, name }
   );
-  console.log('pretty-api:', fileName, 'created in', controllersPath);
+
+  cli.log(chalk.green('Generated'), path.join(controllersPath, fileName));
+}
+
+function makeModelFile(args) {
+  const name = cli.extractParam(args, 'name');
+  const table = cli.extractParam(args, 'table');
+  const fileName = string.camelCaseToFilename(name) + '.js';
+  const modelsPath = config.get('modelsPath');
+  fs.mkdirSync(modelsPath, { recursive: true });
+
+  cli.log('Generating', path.join(modelsPath, fileName));
+
+  template.insertFile(
+    path.join(__dirname, 'templates/model'),
+    path.join(modelsPath, fileName),
+    {
+      package: package.name,
+      name,
+      decoratorData: table ? `{\r\n  table: '${table}'\r\n}` : '',
+    }
+  );
+  
+  cli.log(chalk.green('Generated'), path.join(modelsPath, fileName));
 }
 
 exports.process = function(command, args) {
   switch (command) {
     case 'make:controller':
-      makeController(args)
+      makeControllerFile(args)
+      break;
+
+    case 'make:model':
+      makeModelFile(args);
       break;
   }
 }

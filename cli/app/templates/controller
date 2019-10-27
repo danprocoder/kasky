@@ -1,4 +1,4 @@
-import { Controller } from 'pretty-api';
+import { Controller } from '%{package}';
 
 @Controller()
 class %{name} {}
