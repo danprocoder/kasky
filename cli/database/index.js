@@ -4,8 +4,8 @@ const cli = require('../../helpers/cli');
 
 exports.process = function(command, args) {
   if (cli.hasFlag(args, '--reset')) {
-    drop();
+    drop.drop();
   } else {
-    migrate();
+    migrate.migrate();
   }
 }

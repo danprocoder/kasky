@@ -1,6 +1,7 @@
-import glob from 'glob';
-import path from 'path';
-import pool from '../../database/connection';
+const glob = require('glob');
+const path = require('path');
+const pool = require('../../database/connection');
+const schema = require('../../database/schema');
 
 exports.migrate = () => {
   const migrationsPath = path.join(process.cwd(), '/src/database/migrations');
@@ -22,11 +23,10 @@ exports.migrate = () => {
   
       console.log('Migrating \x1b[2m%s\x1b[0m', fileName);
   
-      const MigrationClass = require(filePath).default;
-      const instance = new MigrationClass();
-      const schema = instance.up();
+      const migration = require(filePath);
+      const schemaResult = new migration().up(schema);
   
-      await pool.execute(schema.query);
+      await pool.execute(schemaResult.query);
   
       console.log('\x1b[32m%s\x1b[0m \x1b[2m%s', 'Migrated', fileName);
       migrated.push(`('${fileName}')`);

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   create (tableName, fields) {
     let primaryKeyDef = null;
     let columnDefs = [];
@@ -43,4 +43,4 @@ export default {
       query: 'DROP TABLE IF EXISTS `' + tableName + '`'
     };
   }
-}
+};

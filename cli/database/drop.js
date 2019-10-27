@@ -1,5 +1,6 @@
-import path from 'path';
-import pool from '../../database/connection';
+const path = require('path');
+const pool = require('../../database/connection');
+const schema = require('../../database/schema');
 
 exports.drop = () => {
   const migrationsPath = path.join(process.cwd(), '/src/database/migrations');
@@ -12,9 +13,9 @@ exports.drop = () => {
       rows.forEach(row => {
         const filePath = path.join(migrationsPath, row.file)
 
-        const MigrationClass = require(filePath).default;
+        const MigrationClass = require(filePath);
 
-        const { query, table } = new MigrationClass().down();
+        const { query, table } = new MigrationClass().down(schema);
         
         console.log('Dropping \x1b[2m%s\x1b[0m', table)
         deletions.push(
