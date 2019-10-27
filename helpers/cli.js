@@ -21,6 +21,10 @@ exports.log = function(...message) {
   console.log(chalk.gray(package.name) + ':', ...message);
 };
 
+exports.error = function(...message) {
+  console.error(chalk.gray(package.name) + ':', ...message);
+};
+
 exports.logNewline = function(...message) {
   console.log("\r\n" + chalk.gray(package.name) + ':', ...message);
 };
