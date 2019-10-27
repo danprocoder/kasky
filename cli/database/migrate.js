@@ -1,6 +1,6 @@
 import glob from 'glob';
 import path from 'path';
-import pool from '../../connection';
+import pool from '../../database/connection';
 
 exports.migrate = () => {
   const migrationsPath = path.join(process.cwd(), '/src/database/migrations');

@@ -31,7 +31,19 @@ ES6Compiler.prototype.handle = function() {
     { recursive: true }
   );
   
-  babel.transformFileAsync(src)
+  babel.transformFileAsync(src, {
+    cwd: path.join(__dirname, '..'),
+    root: path.join(__dirname, '..'),
+    configFile: false,
+    presets: [
+      "@babel/preset-env",
+      "babel-preset-minify"
+    ],
+    plugins: [
+      "@babel/plugin-transform-runtime",
+      ["@babel/plugin-proposal-decorators", { "legacy": true }]
+    ]
+  })
     .then(result => {
       fs.writeFileSync(path.join(this.dst, dstRelPath), result.code);
 

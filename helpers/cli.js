@@ -13,6 +13,10 @@ exports.extractParam = function(args, key) {
   return value ? value.substr(key.length + 3) : null;
 };
 
+exports.hasFlag = function(args, flag) {
+  return args.indexOf(flag) !== -1;
+}
+
 exports.log = function(...message) {
   console.log(chalk.gray(package.name) + ':', ...message);
 };
