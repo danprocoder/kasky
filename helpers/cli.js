@@ -20,3 +20,17 @@ exports.hasFlag = function(args, flag) {
 exports.log = function(...message) {
   console.log(chalk.gray(package.name) + ':', ...message);
 };
+
+exports.logNewline = function(...message) {
+  console.log("\r\n" + chalk.gray(package.name) + ':', ...message);
+};
+
+exports.stdout = {
+  write(message, config={}) {
+    message = chalk.gray(package.name).concat(': ').concat(message);
+    if (config.before) {
+      message = config.before.concat(message);
+    }
+    process.stdout.write(message);
+  }
+}

@@ -1,3 +1,6 @@
+const config = require('../../core/config');
+config.load();
+
 const drop = require('./drop');
 const migrate = require('./migrate');
 const cli = require('../../helpers/cli');

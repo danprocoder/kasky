@@ -1,0 +1,29 @@
+{
+  "database": {
+    "development": {
+      "host": "127.0.0.1",
+      "user": "root",
+      "pass": "",
+      "name": "",
+      "log": true
+    },
+    "production": {
+      "host": "127.0.0.1",
+      "user": "root",
+      "pass": "",
+      "name": ""
+    },
+    "test": {
+      "host": "127.0.0.1",
+      "user": "root",
+      "pass": "",
+      "name": "",
+      "log": false
+    }
+  },
+  "rootDir": "./src",
+  "controllersPath": "{rootDir}/controllers",
+  "modelsPath": "{rootDir}/models",
+  "middlewaresPath": "{rootDir}/middlewares",
+  "databasePath": "{rootDir}/database"
+}

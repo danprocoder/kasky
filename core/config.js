@@ -1,11 +1,10 @@
 const path = require('path');
 const fs = require('fs');
 
-let config = fs.readFileSync(
-  path.join(process.cwd(), 'app.config.json'),
-  { encoding: 'utf-8' }
-);
-config = JSON.parse(config);
+let config;
+exports.load = function() {
+  config = require(path.join(process.cwd(), 'app.config.json'));
+};
 
 function getInjectableValue(p1) {
   const keys = p1.split('.');
@@ -15,7 +14,7 @@ function getInjectableValue(p1) {
     currentValue = currentValue[keys[i]];
   }
   return typeof currentValue === 'object' || currentValue instanceof Array
-    ? undefined // Didn't point to a  valid value
+    ? undefined // Didn't point to a valid value
     : currentValue;
 }
 
@@ -25,7 +24,6 @@ function parseValueInjections(value) {
   while (value.match(injectionSyntax)) {
     value = value
         .replace(injectionSyntax, function(match, p1) {
-          console.log(match, p1);
           const inject = getInjectableValue(p1);
           return inject ? inject : match;
         });
@@ -35,6 +33,7 @@ function parseValueInjections(value) {
 }
 
 exports.get = function(key) {
+  
   const value = config[key];
   return typeof value === 'string' ? parseValueInjections(config[key]) : value;
 }

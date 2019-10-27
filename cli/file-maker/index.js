@@ -52,6 +52,8 @@ function makeModelFile(args) {
 }
 
 exports.process = function(command, args) {
+  config.load();
+  
   switch (command) {
     case 'make:controller':
       makeControllerFile(args)

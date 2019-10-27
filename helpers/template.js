@@ -12,7 +12,9 @@ exports.insertFile = function(templatePath, targetFilepath, values={}) {
   
   fs.writeFileSync(
     targetFilepath,
-    replaceVars(template, values),
+    typeof values === 'object'
+      ? replaceVars(template, values)
+      : template,
     'utf8'
   );
 };

@@ -1,0 +1,15 @@
+{
+  "name": "%{name}",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src -d build",
+    "start": "pretty-api start-server"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@babel/runtime": "^7.6.3",
+    "pretty-api": "file:../liquid"
+  }
+}

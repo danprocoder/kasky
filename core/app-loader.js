@@ -16,7 +16,7 @@ ES6Compiler.prototype.next = function() {
   if (this.i < this.files.length) {
     this.handle();
   } else {
-    console.log("\nCompiler Finished");
+    cli.logNewline('Compiled successfully!');
 
     this.onFinished();
   }
@@ -48,7 +48,7 @@ ES6Compiler.prototype.handle = function() {
       fs.writeFileSync(path.join(this.dst, dstRelPath), result.code);
 
       this.compiled++;
-      process.stdout.write(`\rCompiling ${this.compiled} of ${this.files.length}`);
+      cli.stdout.write(`Compiling files (${Math.floor((this.compiled / this.files.length) * 100)}%)`, { before: "\r" });
 
       this.next();
     });
@@ -68,6 +68,10 @@ ES6Compiler.prototype.compile = function(onFinished) {
 
 // Load user's app.
 exports.loadApp = function() {
+  // Load app.config.json file.
+  config.load();
+  cli.log('Configuration file loaded.');
+
   // Create build folder.
   const buildFolder = path.join(process.cwd(), '.build');
   fs.mkdirSync(buildFolder, { recursive: true });
