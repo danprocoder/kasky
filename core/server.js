@@ -45,7 +45,7 @@ Server.prototype._onHttpRequest = function(req, res) {
   });
 
   req.on('end', () => {
-    const { pathname, query } = url.parse(req.url);
+    const { pathname } = url.parse(req.url);
 
     const resolver = route.getRouteHandler(req.method, pathname);
     if (resolver) {

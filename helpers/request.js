@@ -1,7 +1,10 @@
+const url = require('url');
+
 function Request(req, body) {
   const contentType = req.headers['content-type'];
 
   this.headers = req.headers;
+  this.query = url.parse(req.url, true).query;
   this.body = this._parseRequestBody(contentType, body);
 };
 
