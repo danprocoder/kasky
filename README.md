@@ -9,7 +9,7 @@
 #### Create a controller
 The follow command will create a new controller class file.
 
-`npm make:controller --name=ControllerClassName`
+`pretty-api make:controller --name=ControllerClassName`
 
 An example controller class.
 ```javascript
@@ -45,11 +45,11 @@ export default MyFirstController;
 #### Create a model class.
 The follow command will create a model class file.
 
-`npm make:model --name=YourModelClassName --table=your_database_table_name`
+`pretty-api make:model --name=YourModelClassName --table=your_database_table_name`
 
 Example:
 
-`npm make:model --name=UsersModel --table=users`
+`pretty-api make:model --name=UsersModel --table=users`
 
 The following file will be generated.
 ```javascript
