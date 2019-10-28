@@ -60,12 +60,12 @@ function Project(name) {
 
   // Create folders.
   folders.forEach(folder => {
-    fs.mkdirSync(path.join(process.cwd(), folder), { recursive: true });
+    fs.mkdirSync(path.join(process.cwd(), name, folder), { recursive: true });
   });
 
   // Create project files.
   files.forEach(file => {
-    const targetFilePath = path.join(process.cwd(), file.target);
+    const targetFilePath = path.join(process.cwd(), name, file.target);
     cli.log('Generating', chalk.gray(targetFilePath));
 
     template.insertFile(

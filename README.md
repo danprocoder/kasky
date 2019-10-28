@@ -27,6 +27,19 @@ To create a project using the [coffee script](https://coffeescript.org/) program
 pretty-api init your_project_name --coffee-script
 ```
 
+```text
+|__src
+| |__database
+| | |__migrations
+| |__middlewares
+| |__models
+| |__controllers
+| |__app.js
+|__jsconfig.json
+|__.gitignore
+|__package.json
+|__app.config.json
+```
 
 ## Create a controller
 The follow command will create a new controller class file.
