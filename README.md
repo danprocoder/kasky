@@ -1,12 +1,20 @@
-# node-api-framework
+# pretty-api framework for node.js
 
-#### Installation
+## Installation
 `npm install -g pretty-api` or `yarn add -g pretty-api`
 
-#### Create a new Project
+
+## Create a new Project
 `pretty-api init your_project_name`
 
-#### Create a controller
+To create a project using the [typescript](https://www.typescriptlang.org/) programming language, use:  
+`pretty-api init your_project_name --typescript`
+
+To create a project using the [coffee script](https://coffeescript.org/) programming language, use:  
+`pretty-api init your_project_name --coffee-script`
+
+
+## Create a controller
 The follow command will create a new controller class file.
 
 `pretty-api make:controller --name=ControllerClassName`
@@ -21,7 +29,8 @@ class MyFirstController {}
 export default MyFirstController;
 ```
 
-#### Define Routes
+
+## Define Routes
 ```javascript
 import { Controller, Route } from 'pretty-api';
 
@@ -42,7 +51,8 @@ class MyFirstController {
 export default MyFirstController;
 ```
 
-#### Create a model class.
+
+## Create a model class.
 The follow command will create a model class file.
 
 `pretty-api make:model --name=YourModelClassName --table=your_database_table_name`
