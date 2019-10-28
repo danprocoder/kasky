@@ -20,7 +20,8 @@
     "babel-preset-minify": "^0.5.1",
     "chalk": "^2.4.2",
     "glob": "^7.1.5",
-    "mysql2": "^2.0.0"
+    "mysql2": "^2.0.0",
+    "typescript": "^3.6.4"
   },
   "bin": "cli/index.js"
 }

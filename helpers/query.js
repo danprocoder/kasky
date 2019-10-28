@@ -52,6 +52,10 @@ module.exports = function(table) {
       const escapedFields = fields.map(field => '`' + field + '`').join(',');
       const query = `INSERT INTO \`${table}\`(${escapedFields})VALUES${values.join(',')}`
       return this.run(query);
+    },
+
+    escape(str) {
+      return pool.escape(str);
     }
   }
 }
