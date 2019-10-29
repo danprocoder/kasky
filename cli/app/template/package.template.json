@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.6.3",
-    "pretty-api": "file:../liquid"
+    "%{framework}": "%{frameworkVersion}"
   }
 }

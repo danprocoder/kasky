@@ -8,7 +8,7 @@ const server = require('../../core/server');
 const config = require('../../core/config');
 const cli = require('../../helpers/cli');
 const fileHelper = require('../../helpers/file');
-const template = require('../../helpers/template');
+const project = require('./project');
 const env = require('../../helpers/env');
 const compilers = require('../../helpers/compilers');
 
@@ -25,58 +25,6 @@ const cleanUp = {
     });
   }
 };
-
-function Project(name) {
-  const folders = [
-    'src/controllers',
-    'src/middlewares',
-    'src/models',
-    'src/database/migrations'
-  ];
-
-  const files = [
-    {
-      target: 'package.json',
-      template: 'package.template.json',
-      data: { name }
-    },
-    {
-      target: 'jsconfig.json',
-      template: 'jsconfig.template.json'
-    },
-    {
-      target: 'app.config.json',
-      template: 'app.config.template.json'
-    },
-    {
-      target: 'src/app.js',
-      template: 'src/app.template.js'
-    },
-    {
-      target: '.gitignore',
-      template: '.gitignore.template'
-    }
-  ];
-
-  // Create folders.
-  folders.forEach(folder => {
-    fs.mkdirSync(path.join(process.cwd(), name, folder), { recursive: true });
-  });
-
-  // Create project files.
-  files.forEach(file => {
-    const targetFilePath = path.join(process.cwd(), name, file.target);
-    cli.log('Generating', chalk.gray(targetFilePath));
-
-    template.insertFile(
-      path.join(__dirname, 'template', file.template),
-      targetFilePath,
-      file.data
-    );
-
-    cli.log(chalk.green('Generated'), chalk.gray(targetFilePath));
-  });
-}
 
 function createAppTempBuildDir() {
   return new Promise((resolve, reject) => {
@@ -170,7 +118,7 @@ exports.process = function(command, args) {
       if (!name) {
         cli.log('Project name is required.');
       } else {
-        new Project(name);
+        new project.Project(name).make();
       }
 
       break;
