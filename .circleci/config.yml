@@ -28,7 +28,7 @@ jobs:
 
       # Report test status
       - store_artifacts:
-          path: ~/node-api-framework/coverage/clover.xml
+          path: coverage
 
-      - store_artifacts:
-          path: ~/node-api-framework/coverage
+      - store_test_results:
+          path: coverage
