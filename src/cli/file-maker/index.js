@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
-const package = require('../../package.json');
+const packageJson = require('../../package.json');
 const config = require('../../core/config');
 const template = require('../../helpers/template');
 const string = require('../../helpers/string');
@@ -23,7 +23,7 @@ function makeControllerFile(args) {
   template.insertFile(
     path.join(__dirname, 'templates/controller'),
     path.join(controllersPath, fileName),
-    { package: package.name, name }
+    { package: packageJson.name, name }
   );
 
   cli.log(chalk.green('Generated'), path.join(controllersPath, fileName));
@@ -42,7 +42,7 @@ function makeModelFile(args) {
     path.join(__dirname, 'templates/model'),
     path.join(modelsPath, fileName),
     {
-      package: package.name,
+      package: packageJson.name,
       name,
       decoratorData: table ? `{\r\n  table: '${table}'\r\n}` : '',
     }

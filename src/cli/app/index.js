@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const package = require('../../helpers/package');
+const packageJson = require('../../helpers/package');
 const appLoader = require('../../core/app-loader');
 const server = require('../../core/server');
 const config = require('../../core/config');
@@ -37,7 +37,7 @@ function createAppTempBuildDir() {
 
     const tmpDir = path.join(
       os.tmpdir(),
-      package.name,
+      packageJson.name,
       appPackage.name,
       'build'
     );

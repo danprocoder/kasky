@@ -1,7 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const path = require('path');
-const package = require('../../helpers/package');
+const packageJson = require('../../helpers/package');
 const cli = require('../../helpers/cli');
 const template = require('../../helpers/template');
 
@@ -25,8 +25,8 @@ function Project(name) {
       template: 'package.template.json',
       data: {
         name,
-        framework: package.name,
-        frameworkVersion: package.version
+        framework: packageJson.name,
+        frameworkVersion: packageJson.version
       }
     },
     {
