@@ -1,6 +1,6 @@
 # pretty-api framework for node.js
 
-[![CircleCI](https://circleci.com/gh/danprocoder/node-api-framework.svg?style=svg)](https://circleci.com/gh/danprocoder/node-api-framework) [![codecov](https://codecov.io/gh/danprocoder/node-api-framework/branch/development/graph/badge.svg)](https://codecov.io/gh/danprocoder/node-api-framework) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a4698cb81c0842ff9f9b84ac1c537396)](https://www.codacy.com/manual/danprocoder/node-api-framework?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=danprocoder/node-api-framework&amp;utm_campaign=Badge_Grade)
+[![CircleCI](https://circleci.com/gh/danprocoder/node-api-framework.svg?style=svg)](https://circleci.com/gh/danprocoder/node-api-framework) [![codecov](https://codecov.io/gh/danprocoder/node-api-framework/branch/development/graph/badge.svg)](https://codecov.io/gh/danprocoder/node-api-framework)
 
 ## Installation
 Using npm:
