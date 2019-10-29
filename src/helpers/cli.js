@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const package = require('./package');
+const packageJson = require('./package');
 
 /**
  * Extract a particular value for a parameter from the command line in the format --<key>=<value>.
@@ -18,20 +18,20 @@ exports.hasFlag = function(args, flag) {
 }
 
 exports.log = function(...message) {
-  console.log(chalk.gray(package.name) + ':', ...message);
+  console.log(chalk.gray(packageJson.name) + ':', ...message);
 };
 
 exports.error = function(...message) {
-  console.error(chalk.gray(package.name) + ':', ...message);
+  console.error(chalk.gray(packageJson.name) + ':', ...message);
 };
 
 exports.logNewline = function(...message) {
-  console.log("\r\n" + chalk.gray(package.name) + ':', ...message);
+  console.log("\r\n" + chalk.gray(packageJson.name) + ':', ...message);
 };
 
 exports.stdout = {
   write(message, config={}) {
-    message = chalk.gray(package.name).concat(': ').concat(message);
+    message = chalk.gray(packageJson.name).concat(': ').concat(message);
     if (config.before) {
       message = config.before.concat(message);
     }

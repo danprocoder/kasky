@@ -1,3 +1,6 @@
 {
-  "testMatch": ["<rootDir>/test/**/*.js"]
+  "testMatch": ["<rootDir>/test/**/*.js"],
+  "collectCoverageFrom": [
+    "<rootDir>/src/**/*.js"
+  ]
 }
