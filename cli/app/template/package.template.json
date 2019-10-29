@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel ./src -d build",
+    "build": "pretty-api build",
     "start": "pretty-api start-server"
   },
   "license": "MIT",

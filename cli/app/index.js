@@ -26,6 +26,11 @@ const cleanUp = {
   }
 };
 
+function getAppRootDir() {
+  const rootDir = config.get('rootDir') || 'src';
+  return path.join(process.cwd(), rootDir);
+}
+
 function createAppTempBuildDir() {
   return new Promise((resolve, reject) => {
     const appPackage = require(path.join(process.cwd(), 'package.json'));
@@ -121,6 +126,21 @@ exports.process = function(command, args) {
         new project.Project(name).make();
       }
 
+      break;
+
+    case 'build':
+      config.load();
+      
+      cli.log('Building...');
+
+      runBuild(
+        getAppRootDir(),
+        path.join(process.cwd(), getProductionBuildFolder())
+      )
+        .then(() => {
+          console.log('Build finished!');
+        });
+      
       break;
 
     case 'start-server':

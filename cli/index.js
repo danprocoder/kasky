@@ -2,7 +2,7 @@
 
 const databaseCommands = /^migrate$/;
 const fileMakerCommands = /^make:(controller|migration|model|middleware)$/;
-const appCommands = /^(start-server|init)$/;
+const appCommands = /^(init|build|start-server)$/;
 
 const args = process.argv.slice(2);
 if (args.length >= 1) {
