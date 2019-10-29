@@ -31,4 +31,4 @@ jobs:
           path: coverage
 
       - store_test_results:
-          path: coverage
+          path: coverage/lcov-report
