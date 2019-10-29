@@ -1,5 +1,7 @@
 # pretty-api framework for node.js
 
+[![CircleCI](https://circleci.com/gh/danprocoder/node-api-framework.svg?style=svg)](https://circleci.com/gh/danprocoder/node-api-framework)
+
 ## Installation
 Using npm:
 ```bash

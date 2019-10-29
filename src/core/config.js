@@ -6,8 +6,10 @@ exports.load = function() {
   config = require(path.join(process.cwd(), 'app.config.json'));
 };
 
-function parseValues() {
+function parseValues(config) {
   
+
+  return config;
 }
 
 function getInjectableValue(p1) {
@@ -37,7 +39,10 @@ function parseValueInjections(value) {
 }
 
 exports.get = function(key) {
-  
   const value = config[key];
   return typeof value === 'string' ? parseValueInjections(config[key]) : value;
+}
+
+if (process.env.NODE_ENV === 'test') {
+  exports.parseValues = parseValues;
 }

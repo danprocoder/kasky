@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "pretty-api"
+    "test": "jest --config=jest.config.json --coverage"
   },
   "author": "Daniel Austin",
   "license": "ISC",
@@ -19,12 +19,14 @@
     "@babel/runtime": "^7.6.3",
     "babel-preset-minify": "^0.5.1",
     "chalk": "^2.4.2",
+    "coffeescript": "^2.4.1",
     "glob": "^7.1.5",
     "mysql2": "^2.0.0",
     "typescript": "^3.6.4"
   },
-  "bin": "cli/index.js",
+  "bin": "src/cli/index.js",
   "devDependencies": {
+    "chai": "^4.2.0",
     "jest": "^24.9.0"
   }
 }

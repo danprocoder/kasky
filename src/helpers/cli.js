@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const package = require('../package.json');
+const package = require('./package');
 
 /**
  * Extract a particular value for a parameter from the command line in the format --<key>=<value>.
