@@ -1,0 +1,34 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/node-api-framework
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      # Checkout to project directory
+      - checkout
+
+      # Run commands
+      - run:
+          name: Run apt-get install
+          command: 'sudo apt-get update'
+      - run:
+          name: Install node@latest
+          command: 'sudo apt-get install nodejs'
+      - run:
+          name: Install npm@latest
+          command: 'sudo apt-get install npm'
+      - run:
+          name: Install dependencies
+          command: 'npm install'
+      - run:
+          name: Run test files
+          command: 'npm test'
+
+      # Report test status
+      - store_artifacts:
+          path: ~/node-api-framework/coverage/clover.xml
+
+      - store_artifacts:
+          path: ~/node-api-framework/coverage

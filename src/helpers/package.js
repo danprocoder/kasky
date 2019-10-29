@@ -1,3 +1,4 @@
 const path = require('path');
 
-module.exports = require(path.join(__dirname, '..', 'package.json'));
+const packageJsonPath = path.join(__dirname, '..', '..', 'package.json');
+module.exports = require(packageJsonPath);
