@@ -27,8 +27,12 @@ jobs:
           command: 'npm test'
 
       # Report test status
+      - run:
+          name: Uploading coverage to codecov
+          command: bash <(curl -s https://codecov.io/bash) -t c84090c8-fb23-4a32-ae23-9cf5692cc8f5
+          
       - store_artifacts:
           path: coverage
 
       - store_test_results:
-          path: coverage/lcov-report
+          path: coverage
