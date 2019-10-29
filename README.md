@@ -17,15 +17,7 @@ yarn add -g pretty-api
 pretty-api init your_project_name
 ```
 
-To create a project using the [typescript](https://www.typescriptlang.org/) programming language, use:  
-```bash
-pretty-api init your_project_name --typescript
-```
-
-To create a project using the [coffee script](https://coffeescript.org/) programming language, use:  
-```bash
-pretty-api init your_project_name --coffee-script
-```
+The above command will create a new folder named `your_project_name` in the current working directory with some files and folders created inside it. Below is what the folder structure of the new created `your_project_name` folder will look like.
 
 ```text
 |__src
@@ -39,6 +31,17 @@ pretty-api init your_project_name --coffee-script
 |__.gitignore
 |__package.json
 |__app.config.json
+```
+
+#### Work with other programming languages.
+To create a project using the [typescript](https://www.typescriptlang.org/) programming language, use:  
+```bash
+pretty-api init your_project_name --typescript
+```
+
+To create a project using the [coffee script](https://coffeescript.org/) programming language, use:  
+```bash
+pretty-api init your_project_name --coffee-script
 ```
 
 ## Create a controller

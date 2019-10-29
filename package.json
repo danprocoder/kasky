@@ -23,5 +23,8 @@
     "mysql2": "^2.0.0",
     "typescript": "^3.6.4"
   },
-  "bin": "cli/index.js"
+  "bin": "cli/index.js",
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
 }
