@@ -2,8 +2,9 @@ version: 2.1
 jobs:
   build:
     working_directory: ~/node-api-framework
-    machine:
-      image: ubuntu-1604:201903-01
+    docker:
+      - image: circleci/node:10.0.0 # for the CircleCI "Convenience" image
+      - image: node:10.0.0 # for the Docker Library image
 
     steps:
       # Checkout to project directory
@@ -11,17 +12,8 @@ jobs:
 
       # Run commands
       - run:
-          name: Run apt-get install
-          command: 'sudo apt-get update'
-      - run:
-          name: Install node@latest
-          command: 'sudo apt-get install nodejs'
-      - run:
-          name: Install npm@latest
-          command: 'sudo apt-get install npm'
-      - run:
           name: Install dependencies
-          command: 'npm install'
+          command: node -v && npm install
       - run:
           name: Run test files
           command: 'npm test'

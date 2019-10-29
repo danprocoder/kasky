@@ -1,14 +1,16 @@
 module.exports = {
   create (tableName, fields) {
-    let primaryKeyDef = null;
-    let columnDefs = [];
+    let primaryKeyDef = null
+    const columnDefs = []
 
-    Object.keys(fields).forEach(colName => {
-      const { dataType, nullable, autoIncrement, primaryKey, defaultValue } = fields[colName];
+    Object.keys(fields).forEach((colName) => {
+      const {
+        dataType, nullable, autoIncrement, primaryKey, defaultValue
+      } = fields[colName]
 
-      let col = `\`${colName}\` ${dataType}`;
+      let col = `\`${colName}\` ${dataType}`
       if (nullable === false) {
-        col += ' NOT NULL';
+        col += ' NOT NULL'
       }
 
       if (defaultValue) {
@@ -16,31 +18,31 @@ module.exports = {
       }
 
       if (autoIncrement === true) {
-        col += ' AUTO_INCREMENT';
+        col += ' AUTO_INCREMENT'
       }
       if (primaryKey === true) {
-        primaryKeyDef = 'PRIMARY KEY (`' + colName + '`)';
+        primaryKeyDef = `PRIMARY KEY (\`${colName}\`)`
       }
 
-      columnDefs.push(col);
-    });
+      columnDefs.push(col)
+    })
 
-    let query = 'CREATE TABLE IF NOT EXISTS `' + tableName +  '`(' + columnDefs.join(',');
+    let query = `CREATE TABLE IF NOT EXISTS \`${tableName}\`(${columnDefs.join(',')}`
     if (primaryKeyDef) {
       query += `,${primaryKeyDef}`
     }
-    query += ')';
+    query += ')'
 
     return {
       table: tableName,
       query
-    };
+    }
   },
 
   drop (tableName) {
     return {
       table: tableName,
-      query: 'DROP TABLE IF EXISTS `' + tableName + '`'
-    };
+      query: `DROP TABLE IF EXISTS \`${tableName}\``
+    }
   }
-};
+}

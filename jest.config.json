@@ -1,8 +1,0 @@
-{
-  "testMatch": ["<rootDir>/src/**/__tests__/*.js"],
-  "collectCoverageFrom": [
-    "<rootDir>/src/**/*.js",
-    "!<rootDir>/src/**/__tests__/*.js"
-  ],
-  "setupFilesAfterEnv": ["jest-extended"]
-}

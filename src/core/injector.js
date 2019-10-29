@@ -1,11 +1,11 @@
 module.exports = {
   objects: [],
 
-  resolve(target) {
-    let existing = this.objects.find(ref => ref instanceof target);
+  resolve (Target) {
+    let existing = this.objects.find((ref) => ref instanceof Target)
     if (!existing) {
-      this.objects.push(existing = new target())
+      this.objects.push(existing = new Target())
     }
-    return existing;
+    return existing
   }
-};
+}

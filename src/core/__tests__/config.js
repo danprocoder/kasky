@@ -1,8 +1,6 @@
-const { expect } = require('chai');
-const config = require('../config');
+const config = require('../config')
 
 describe('Test src/core/config.js', () => {
-  
   it('it should inject all values', () => {
     const parsed = new config.Parser({
       project: {
@@ -27,18 +25,17 @@ describe('Test src/core/config.js', () => {
       someOtherPath: '{rootDir}{somePath}/end',
       o: '{project.config}',
       unknown: '{does.not.exists}'
-    }).parse();
+    }).parse()
 
-    expect(parsed.project.config.rootDir).to.be.eq('/src');
-    expect(parsed.project.config.somePath).to.be.eq('/src/somePath');
-    expect(parsed.project.developer.drinks).to.be.eq('lipton (green tea)');
-    expect(parsed.tea.name).to.be.eq('lipton');
-    expect(parsed.tea.type).to.be.eq('green tea');
-    expect(parsed.rootDir).to.be.eq('/src');
-    expect(parsed.somePath).to.be.eq('/src/somePath');
-    expect(parsed.someOtherPath).to.be.eq('/src/src/somePath/end');
-    expect(parsed.o).to.be.eq(parsed.project.config);
-    expect(parsed.unknown).to.be.eq('{does.not.exists}');
-  });
-
-});
+    expect(parsed.project.config.rootDir).toEqual('/src')
+    expect(parsed.project.config.somePath).toEqual('/src/somePath')
+    expect(parsed.project.developer.drinks).toEqual('lipton (green tea)')
+    expect(parsed.tea.name).toEqual('lipton')
+    expect(parsed.tea.type).toEqual('green tea')
+    expect(parsed.rootDir).toEqual('/src')
+    expect(parsed.somePath).toEqual('/src/somePath')
+    expect(parsed.someOtherPath).toEqual('/src/src/somePath/end')
+    expect(parsed.o).toEqual(parsed.project.config)
+    expect(parsed.unknown).toEqual('{does.not.exists}')
+  })
+})

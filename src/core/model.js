@@ -1,14 +1,14 @@
-const db = require('../helpers/query');
+const db = require('../helpers/query')
 
-function Model(options) {
-  return function(target, name, descriptor) {
+function Model (options) {
+  return function (target, name, descriptor) {
     if (options.table) {
       target.prototype.table = options.table
     }
 
-    target.prototype.db = db(options.table);
+    target.prototype.db = db(options.table)
 
-    return descriptor;
+    return descriptor
   }
-};
-module.exports = Model;
+}
+module.exports = Model

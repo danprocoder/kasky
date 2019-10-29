@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --config=jest.config.json --coverage"
+    "test": "jest --coverage",
+    "lint:check": "eslint ./src",
+    "lint:fix": "eslint --fix ./src"
   },
   "author": "Daniel Austin",
   "license": "ISC",
@@ -26,15 +28,19 @@
   },
   "bin": "src/cli/index.js",
   "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-spies": "^1.0.0",
+    "eslint": "^6.6.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "jest-extended": "^0.11.2"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test"
+      "pre-commit": "npm run lint-check && npm test"
     }
   }
 }
