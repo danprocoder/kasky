@@ -116,6 +116,7 @@ function beforeServer(envType) {
 }
 
 exports.process = function(command, args) {
+
   switch (command) {
 
     case 'init':
@@ -169,6 +170,7 @@ exports.process = function(command, args) {
 
       break;
   }
+  
 };
 
 process.on('exit', () => cleanUp.cleanUp());

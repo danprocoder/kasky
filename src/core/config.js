@@ -6,6 +6,10 @@ exports.load = function() {
   config = require(path.join(process.cwd(), 'app.config.json'));
 };
 
+function parseValues() {
+  
+}
+
 function getInjectableValue(p1) {
   const keys = p1.split('.');
   let currentValue = config;
