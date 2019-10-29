@@ -27,8 +27,10 @@
   "bin": "src/cli/index.js",
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-spies": "^1.0.0",
     "husky": "^3.0.9",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "jest-extended": "^0.11.2"
   },
   "husky": {
     "hooks": {

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const config = require('../../src/core/config');
+const config = require('../config');
 
 describe('Test src/core/config.js', () => {
   
