@@ -76,7 +76,7 @@ function getProductionBuildFolder() {
  * 
  * @param {*} envType The enviroment type is app should run on: production, development or test.
  * 
- * @returns {Promise<string>} The directory to run the app from.
+ * @returns {Promise<string>} Full absolute path to the app's build directory. This is where is app will be served from.
  */
 function beforeServer(envType) {
   if (envType === 'production') {
@@ -87,7 +87,7 @@ function beforeServer(envType) {
         throw new Error('build folder was not found. Run `npm build` to build the app.');
       }
   
-      resolve(buildFolder);
+      resolve(buildDir);
     });
   } else {
     return createAppTempBuildDir()
