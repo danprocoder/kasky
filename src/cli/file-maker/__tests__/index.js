@@ -29,6 +29,7 @@ describe('Test commands to create generate files', () => {
     jest.spyOn(config, 'get').mockImplementation((key) => testConfig[key])
 
     jest.spyOn(string, 'validateClassname')
+    jest.spyOn(string, 'validateTablename')
   })
 
   afterAll(() => jest.restoreAllMocks())
@@ -141,26 +142,12 @@ describe('Test commands to create generate files', () => {
         )
     })
 
-    it('should throw an error if user enters an invalid table name', () => {
-      const illegalNames = [
-        '123tablename',
-        '#$%^&*)(*&^%^&*(',
-        '123456789'
-      ]
-
-      illegalNames.forEach((name) => {
-        expect(
-          () => fileMaker.makeMigrationFile([`--table=${name}`])
-        ).toThrow(
-          'Table name can only start with a letter, followed by one or more letters, numbers or underscores.'
-        )
-      })
-    })
-
     it('should create a migration file', () => {
       fileMaker.makeMigrationFile(['--table=users_blogs'])
 
       const migrationsDir = path.join(testConfig.databasePath, 'migrations')
+
+      expect(string.validateTablename).toHaveBeenCalledWith('users_blogs')
 
       expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
       expect(fs.mkdirSync).toHaveBeenCalledWith(migrationsDir, { recursive: true })
@@ -201,6 +188,8 @@ describe('Test commands to create generate files', () => {
     it('should create a new model file without --table option specified', () => {
       fileMaker.makeModelFile(['--name=UsersBlogs'])
 
+      expect(string.validateTablename).toHaveBeenCalledTimes(0)
+
       expect(string.validateClassname).toHaveBeenCalledWith('UsersBlogs')
 
       expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
@@ -221,6 +210,8 @@ describe('Test commands to create generate files', () => {
       fileMaker.makeModelFile(['--name=UsersBlogs', '--table=users_blogs'])
 
       expect(string.validateClassname).toHaveBeenCalledWith('UsersBlogs')
+
+      expect(string.validateTablename).toHaveBeenCalledWith('users_blogs')
 
       expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
       expect(fs.mkdirSync).toHaveBeenCalledWith(testConfig.modelsPath, { recursive: true })
