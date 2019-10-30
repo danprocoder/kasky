@@ -11,4 +11,34 @@ describe('Test string helper functions', () => {
       expect(string.camelCaseToFilename(key)).toEqual(testCases[key])
     })
   })
+
+  it('should throw an error if classname contains invalid characters', () => {
+    const illegalNames = [
+      '$6789Illegal.</classname-+',
+      'hyphenated-classname',
+      'underscore_separated_classname'
+    ]
+    illegalNames.forEach(name => {
+      expect(() =>
+        string.validateClassname(name)
+      ).toThrow('Class name can only contain letters or numbers.')
+    })
+  })
+
+  it('should throw an error if classname is valid but starts with a small letter', () => {
+    expect(() =>
+      string.validateClassname('camelCase')
+    ).toThrow('Class name must begin with an uppercase letter')
+  })
+
+  it('should throw an error if classname starts with a number', () => {
+    expect(() =>
+      string.validateClassname('0CamelCase')
+    ).toThrow('Class name must begin with an uppercase letter')
+  })
+
+  it('should return true if classname is valid', () => {
+    expect(string.validateClassname('CamelCase')).toEqual(true)
+    expect(string.validateClassname('CamelCase007')).toEqual(true)
+  })
 })
