@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const chalk = require('chalk')
+
 const databaseCommands = /^migrate$/
 const fileMakerCommands = /^make:(controller|migration|model|middleware)$/
 const appCommands = /^(init|build|start-server)$/
@@ -20,7 +22,11 @@ if (args.length >= 1) {
   }
 
   if (resolver) {
-    resolver.process(command, args.slice(1))
+    try {
+      resolver.process(command, args.slice(1))
+    } catch (err) {
+      console.log(chalk.red(err))
+    }
   }
 } else {
   console.error('pretty-api: No command')

@@ -47,6 +47,10 @@ module.exports = {
     string.validateClassname(name)
 
     const table = cli.extractParam(args, 'table')
+    if (table) {
+      string.validateTablename(table)
+    }
+
     const fileName = `${string.camelCaseToFilename(name)}.js`
     const modelsPath = config.get('modelsPath')
     fs.mkdirSync(modelsPath, { recursive: true })
@@ -78,9 +82,8 @@ module.exports = {
         'Database table name not supplied. ' +
         'Use the --table=your_table_here option to specify a table name.'
       )
-    } else if (!table.match(/^[a-zA-Z$][a-zA-Z0-9_$]*$/)) {
-      throw new Error('Table name can only start with a letter, followed by one or more letters, numbers or underscores.')
     }
+    string.validateTablename(table)
 
     const date = new Date()
     const filename = `${table}-${date.getFullYear()}${date.getMonth()}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`.concat('.js')
