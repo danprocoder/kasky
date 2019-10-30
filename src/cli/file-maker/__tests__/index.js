@@ -9,22 +9,22 @@ const packageJson = require('../../../helpers/package')
 
 const testConfig = {
   middlewaresPath: '/path/to/middlewares',
-  controllersPath: '/path/to/controllers'
+  controllersPath: '/path/to/controllers',
+  databasePath: '/path/to/database'
 }
 
 const templateDir = path.join(process.cwd(), 'src/cli/file-maker/templates')
 
 describe('Test commands to create generate files', () => {
   beforeAll(() => {
+    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {})
+    jest.spyOn(template, 'insertFile').mockImplementation(() => {})
+
     // Suppress log functions
     jest.spyOn(cli, 'log').mockImplementation(() => {})
     jest.spyOn(cli, 'error').mockImplementation(() => {})
 
     jest.spyOn(config, 'load').mockImplementation(() => {})
-
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {})
-    jest.spyOn(template, 'insertFile').mockImplementation(() => {})
-
     jest.spyOn(config, 'get').mockImplementation((key) => testConfig[key])
   })
 
@@ -146,6 +146,23 @@ describe('Test commands to create generate files', () => {
           'Table name can only start with a letter, followed by one or more letters, numbers or underscores.'
         )
       })
+    })
+
+    it('should create a migration file', () => {
+      fileMaker.makeMigrationFile(['--table=users_blogs'])
+
+      const migrationsDir = path.join(testConfig.databasePath, 'migrations')
+
+      expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
+      expect(fs.mkdirSync).toHaveBeenCalledWith(migrationsDir, { recursive: true })
+
+      expect(template.insertFile).toHaveBeenCalledTimes(1)
+      const callArgs = template.insertFile.mock.calls[0]
+      expect(callArgs[0]).toEqual(path.join(templateDir, 'migration'))
+      expect(callArgs[1]).toMatch(new RegExp(
+        path.join(migrationsDir, 'users-blogs-[0-9]{9,14}\\.js$')
+      ))
+      expect(callArgs[2]).toEqual({ table: 'users_blogs' })
     })
   })
 })
