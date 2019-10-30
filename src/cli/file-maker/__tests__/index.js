@@ -47,6 +47,15 @@ describe('Test commands to create generate files', () => {
       spy.mockRestore()
     })
 
+    it('should throw an error if --name options is not specified', () => {
+      expect(
+        () => fileMaker.makeMiddlewareFile([])
+      ).toThrow(
+        'Middleware classname not specified. ' +
+        'Use the --name=YourMiddleware option to specify the classname.'
+      )
+    })
+
     it('should create a new middleware file in the middlewares directory', () => {
       // NB: The database path will be retrieved from user's configuration settings.
 
@@ -101,6 +110,42 @@ describe('Test commands to create generate files', () => {
         path.join(testConfig.controllersPath, fileName),
         { package: packageJson.name, name: className }
       )
+    })
+  })
+
+  describe('Test feature to make a migration file from the command line', () => {
+    it('should call function to create a migration file', () => {
+      const spy = jest.spyOn(fileMaker, 'makeMigrationFile')
+      spy.mockImplementation(() => {})
+
+      fileMaker.process('make:migration', ['--table=users_blogs'])
+      expect(fileMaker.makeMigrationFile).toHaveBeenCalledWith(['--table=users_blogs'])
+
+      spy.mockRestore()
+    })
+
+    it('should throw an error if --table option is not specified', () => {
+      expect(() => fileMaker.makeMigrationFile([]))
+        .toThrow(
+          'Database table name not supplied. ' +
+          'Use the --table=your_table_here option to specify a table name.'
+        )
+    })
+
+    it('should throw an error if user enters an invalid table name', () => {
+      const illegalNames = [
+        '123tablename',
+        '#$%^&*)(*&^%^&*(',
+        '123456789'
+      ]
+
+      illegalNames.forEach((name) => {
+        expect(
+          () => fileMaker.makeMigrationFile([`--table=${name}`])
+        ).toThrow(
+          'Table name can only start with a letter, followed by one or more letters, numbers or underscores.'
+        )
+      })
     })
   })
 })
