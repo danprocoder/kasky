@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage --runInBand --config=jest.config.json",
     "lint:check": "eslint ./src",
     "lint:fix": "eslint --fix ./src"
   },

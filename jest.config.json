@@ -2,5 +2,9 @@
   "verbose": true,
   "transform": {
     "^.+\\.js$": "babel-jest"
-  }
+  },
+  "collectCoverageFrom": [
+    "<rootDir>/src/**/**.js",
+    "!<rootDir>/src/**/__tests__/**/*.js"
+  ]
 }
