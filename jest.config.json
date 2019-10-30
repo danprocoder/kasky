@@ -1,0 +1,6 @@
+{
+  "verbose": true,
+  "transform": {
+    "^.+\\.js$": "babel-jest"
+  }
+}
