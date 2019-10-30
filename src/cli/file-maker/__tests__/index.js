@@ -9,22 +9,22 @@ const packageJson = require('../../../helpers/package')
 
 const testConfig = {
   middlewaresPath: '/path/to/middlewares',
-  controllersPath: '/path/to/controllers'
+  controllersPath: '/path/to/controllers',
+  databasePath: '/path/to/database'
 }
 
 const templateDir = path.join(process.cwd(), 'src/cli/file-maker/templates')
 
 describe('Test commands to create generate files', () => {
   beforeAll(() => {
+    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {})
+    jest.spyOn(template, 'insertFile').mockImplementation(() => {})
+
     // Suppress log functions
     jest.spyOn(cli, 'log').mockImplementation(() => {})
     jest.spyOn(cli, 'error').mockImplementation(() => {})
 
     jest.spyOn(config, 'load').mockImplementation(() => {})
-
-    jest.spyOn(fs, 'mkdirSync').mockImplementation(() => {})
-    jest.spyOn(template, 'insertFile').mockImplementation(() => {})
-
     jest.spyOn(config, 'get').mockImplementation((key) => testConfig[key])
   })
 
@@ -45,6 +45,15 @@ describe('Test commands to create generate files', () => {
       expect(fileMaker.makeMiddlewareFile).toHaveBeenCalledWith(['--name=ValidateUser'])
 
       spy.mockRestore()
+    })
+
+    it('should throw an error if --name options is not specified', () => {
+      expect(
+        () => fileMaker.makeMiddlewareFile([])
+      ).toThrow(
+        'Middleware classname not specified. ' +
+        'Use the --name=YourMiddleware option to specify the classname.'
+      )
     })
 
     it('should create a new middleware file in the middlewares directory', () => {
@@ -101,6 +110,59 @@ describe('Test commands to create generate files', () => {
         path.join(testConfig.controllersPath, fileName),
         { package: packageJson.name, name: className }
       )
+    })
+  })
+
+  describe('Test feature to make a migration file from the command line', () => {
+    it('should call function to create a migration file', () => {
+      const spy = jest.spyOn(fileMaker, 'makeMigrationFile')
+      spy.mockImplementation(() => {})
+
+      fileMaker.process('make:migration', ['--table=users_blogs'])
+      expect(fileMaker.makeMigrationFile).toHaveBeenCalledWith(['--table=users_blogs'])
+
+      spy.mockRestore()
+    })
+
+    it('should throw an error if --table option is not specified', () => {
+      expect(() => fileMaker.makeMigrationFile([]))
+        .toThrow(
+          'Database table name not supplied. ' +
+          'Use the --table=your_table_here option to specify a table name.'
+        )
+    })
+
+    it('should throw an error if user enters an invalid table name', () => {
+      const illegalNames = [
+        '123tablename',
+        '#$%^&*)(*&^%^&*(',
+        '123456789'
+      ]
+
+      illegalNames.forEach((name) => {
+        expect(
+          () => fileMaker.makeMigrationFile([`--table=${name}`])
+        ).toThrow(
+          'Table name can only start with a letter, followed by one or more letters, numbers or underscores.'
+        )
+      })
+    })
+
+    it('should create a migration file', () => {
+      fileMaker.makeMigrationFile(['--table=users_blogs'])
+
+      const migrationsDir = path.join(testConfig.databasePath, 'migrations')
+
+      expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
+      expect(fs.mkdirSync).toHaveBeenCalledWith(migrationsDir, { recursive: true })
+
+      expect(template.insertFile).toHaveBeenCalledTimes(1)
+      const callArgs = template.insertFile.mock.calls[0]
+      expect(callArgs[0]).toEqual(path.join(templateDir, 'migration'))
+      expect(callArgs[1]).toMatch(new RegExp(
+        path.join(migrationsDir, 'users-blogs-[0-9]{9,14}\\.js$')
+      ))
+      expect(callArgs[2]).toEqual({ table: 'users_blogs' })
     })
   })
 })

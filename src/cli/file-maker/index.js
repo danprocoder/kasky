@@ -65,11 +65,12 @@ module.exports = {
   makeMigrationFile (args) {
     const table = cli.extractParam(args, 'table')
     if (!table) {
-      cli.error('Table name is required.')
-      return
-    } if (!table.match(/^[a-zA-Z][a-zA-Z0-9_]*$/)) {
-      cli.error('Table name can only start with a letter, followed by one or more letters, numbers or underscores.')
-      return
+      throw new Error(
+        'Database table name not supplied. ' +
+        'Use the --table=your_table_here option to specify a table name.'
+      )
+    } else if (!table.match(/^[a-zA-Z$][a-zA-Z0-9_$]*$/)) {
+      throw new Error('Table name can only start with a letter, followed by one or more letters, numbers or underscores.')
     }
 
     const date = new Date()
@@ -99,8 +100,10 @@ module.exports = {
   makeMiddlewareFile (args) {
     const name = cli.extractParam(args, 'name')
     if (!name) {
-      cli.error('Name of middleware not supplied.')
-      return
+      throw new Error(
+        'Middleware classname not specified. ' +
+        'Use the --name=YourMiddleware option to specify the classname.'
+      )
     }
 
     const middlewaresPath = config.get('middlewaresPath')
