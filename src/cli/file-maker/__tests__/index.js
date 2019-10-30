@@ -10,7 +10,8 @@ const packageJson = require('../../../helpers/package')
 const testConfig = {
   middlewaresPath: '/path/to/middlewares',
   controllersPath: '/path/to/controllers',
-  databasePath: '/path/to/database'
+  databasePath: '/path/to/database',
+  modelsPath: '/path/to/models'
 }
 
 const templateDir = path.join(process.cwd(), 'src/cli/file-maker/templates')
@@ -26,6 +27,8 @@ describe('Test commands to create generate files', () => {
 
     jest.spyOn(config, 'load').mockImplementation(() => {})
     jest.spyOn(config, 'get').mockImplementation((key) => testConfig[key])
+
+    jest.spyOn(string, 'validateClassname')
   })
 
   afterAll(() => jest.restoreAllMocks())
@@ -57,9 +60,10 @@ describe('Test commands to create generate files', () => {
     })
 
     it('should create a new middleware file in the middlewares directory', () => {
-      // NB: The database path will be retrieved from user's configuration settings.
-
       fileMaker.process('make:middleware', ['--name=ValidateUser'])
+
+      // Must validate classname
+      expect(string.validateClassname).toHaveBeenCalledWith('ValidateUser')
 
       expect(fs.mkdirSync).toHaveBeenCalledWith(testConfig.middlewaresPath, { recursive: true })
 
@@ -101,6 +105,9 @@ describe('Test commands to create generate files', () => {
 
       fileMaker.makeControllerFile(['--name=MyNewController'])
 
+      // Must validate classname
+      expect(string.validateClassname).toHaveBeenCalledWith('MyNewController')
+
       expect(fs.mkdirSync).toHaveBeenCalledWith(
         testConfig.controllersPath, { recursive: true }
       )
@@ -114,6 +121,8 @@ describe('Test commands to create generate files', () => {
   })
 
   describe('Test feature to make a migration file from the command line', () => {
+    afterEach(() => jest.clearAllMocks())
+
     it('should call function to create a migration file', () => {
       const spy = jest.spyOn(fileMaker, 'makeMigrationFile')
       spy.mockImplementation(() => {})
@@ -163,6 +172,68 @@ describe('Test commands to create generate files', () => {
         path.join(migrationsDir, 'users-blogs-[0-9]{9,14}\\.js$')
       ))
       expect(callArgs[2]).toEqual({ table: 'users_blogs' })
+    })
+  })
+
+  describe('Test feature to make a model file from the command lind', () => {
+    afterEach(() => jest.clearAllMocks())
+
+    it('should call function to create a model file', () => {
+      const spy = jest.spyOn(fileMaker, 'makeModelFile')
+      spy.mockImplementation(() => {})
+
+      fileMaker.process('make:model', ['--name=MyModel'])
+      expect(fileMaker.makeModelFile).toHaveBeenCalledWith(['--name=MyModel'])
+
+      spy.mockRestore()
+    })
+
+    it('should throw an error if --name option is not supplied', () => {
+      expect(() =>
+        fileMaker.makeModelFile([])
+      )
+        .toThrow(
+          'Model class name not supplied. ' +
+          'Use the --name=YourModelClass option to specify a class name.'
+        )
+    })
+
+    it('should create a new model file without --table option specified', () => {
+      fileMaker.makeModelFile(['--name=UsersBlogs'])
+
+      expect(string.validateClassname).toHaveBeenCalledWith('UsersBlogs')
+
+      expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
+      expect(fs.mkdirSync).toHaveBeenCalledWith(testConfig.modelsPath, { recursive: true })
+
+      expect(template.insertFile).toHaveBeenCalledWith(
+        path.join(templateDir, 'model'),
+        path.join(testConfig.modelsPath, 'users-blogs.js'),
+        {
+          package: packageJson.name,
+          name: 'UsersBlogs',
+          decoratorData: ''
+        }
+      )
+    })
+
+    it('should create a new model file with --table option specified', () => {
+      fileMaker.makeModelFile(['--name=UsersBlogs', '--table=users_blogs'])
+
+      expect(string.validateClassname).toHaveBeenCalledWith('UsersBlogs')
+
+      expect(fs.mkdirSync).toHaveBeenCalledTimes(1)
+      expect(fs.mkdirSync).toHaveBeenCalledWith(testConfig.modelsPath, { recursive: true })
+
+      expect(template.insertFile).toHaveBeenCalledWith(
+        path.join(templateDir, 'model'),
+        path.join(testConfig.modelsPath, 'users-blogs.js'),
+        {
+          package: packageJson.name,
+          name: 'UsersBlogs',
+          decoratorData: "{\r\n  table: 'users_blogs'\r\n}"
+        }
+      )
     })
   })
 })

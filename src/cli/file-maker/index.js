@@ -19,6 +19,7 @@ module.exports = {
     if (!name) {
       throw new Error('Name of controller class not supplied')
     }
+    string.validateClassname(name)
 
     const fileName = `${string.camelCaseToFilename(name)}.js`
     const controllersPath = config.get('controllersPath')
@@ -37,6 +38,14 @@ module.exports = {
 
   makeModelFile (args) {
     const name = cli.extractParam(args, 'name')
+    if (!name) {
+      throw new Error(
+        'Model class name not supplied. ' +
+        'Use the --name=YourModelClass option to specify a class name.'
+      )
+    }
+    string.validateClassname(name)
+
     const table = cli.extractParam(args, 'table')
     const fileName = `${string.camelCaseToFilename(name)}.js`
     const modelsPath = config.get('modelsPath')
@@ -105,6 +114,7 @@ module.exports = {
         'Use the --name=YourMiddleware option to specify the classname.'
       )
     }
+    string.validateClassname(name)
 
     const middlewaresPath = config.get('middlewaresPath')
     fs.mkdirSync(middlewaresPath, { recursive: true })
