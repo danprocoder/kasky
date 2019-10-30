@@ -1,6 +1,6 @@
-function Response(res) {
-  this.res = res;
-};
+function Response (res) {
+  this.res = res
+}
 
 // Statuses
 const statuses = {
@@ -10,39 +10,38 @@ const statuses = {
   forbidden: 400,
   unauthorized: 401,
   internalServerError: 500
-};
-Object.keys(statuses).forEach(funcName => {
-  Response.prototype[funcName] = function(data=null, type=null) {
-    this.res.statusCode = statuses[funcName];
+}
+Object.keys(statuses).forEach((funcName) => {
+  Response.prototype[funcName] = function (data = null, type = null) {
+    this.res.statusCode = statuses[funcName]
 
     this.header(
       'Content-type',
-      type ? type : this._guessResponseType(data)
-    );
+      type || this._guessResponseType(data)
+    )
 
     if (data) {
-      this._send(data);
+      this._send(data)
     }
   }
-});
+})
 
-Response.prototype._guessResponseType = function(data) {
+Response.prototype._guessResponseType = function (data) {
   if (typeof data === 'object' || data instanceof Array) {
-    return 'application/json';
-  } else {
-    return 'text/plain';
+    return 'application/json'
   }
+  return 'text/plain'
 }
 
-Response.prototype.header = function(key, value) {
-  this.res.setHeader(key, value);
+Response.prototype.header = function (key, value) {
+  this.res.setHeader(key, value)
 
-  return this;
-};
+  return this
+}
 
-Response.prototype._send = function(data) {
-  this.res.write(JSON.stringify(data));
-  this.res.end();
-};
+Response.prototype._send = function (data) {
+  this.res.write(JSON.stringify(data))
+  this.res.end()
+}
 
-module.exports = Response;
+module.exports = Response

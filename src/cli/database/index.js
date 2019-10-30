@@ -1,14 +1,15 @@
-const config = require('../../core/config');
-config.load();
+const config = require('../../core/config')
 
-const drop = require('./drop');
-const migrate = require('./migrate');
-const cli = require('../../helpers/cli');
+config.load()
 
-exports.process = function(command, args) {
+const drop = require('./drop')
+const migrate = require('./migrate')
+const cli = require('../../helpers/cli')
+
+exports.process = function (command, args) {
   if (cli.hasFlag(args, '--reset')) {
-    drop.drop();
+    drop.drop()
   } else {
-    migrate.migrate();
+    migrate.migrate()
   }
 }

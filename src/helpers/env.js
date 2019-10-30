@@ -1,16 +1,16 @@
-let env;
+let env
 switch (process.env.NODE_ENV) {
   case 'production':
-    env = 'production';
-    break;
+    env = 'production'
+    break
   case 'test':
-    env = 'test';
-    break;
+    env = 'test'
+    break
   case 'development':
   default:
-    env = 'development';
+    env = 'development'
 }
 
-exports.getCurrentEnvironment = function() {
-  return env;
+exports.getCurrentEnvironment = function () {
+  return env
 }
