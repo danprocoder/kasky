@@ -16,6 +16,10 @@ module.exports = {
    */
   makeControllerFile (args) {
     const name = cli.extractParam(args, 'name')
+    if (!name) {
+      throw new Error('Name of controller class not supplied')
+    }
+
     const fileName = `${string.camelCaseToFilename(name)}.js`
     const controllersPath = config.get('controllersPath')
     fs.mkdirSync(controllersPath, { recursive: true })
