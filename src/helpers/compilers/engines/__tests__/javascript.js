@@ -1,5 +1,4 @@
 const babel = require('@babel/core')
-const fs = require('fs')
 const path = require('path')
 const Javascript = require('../javascript')
 
@@ -17,14 +16,16 @@ jest.mock('../../../../helpers/file', () => {
   }
 })
 
+jest.mock('fs', () => ({
+  lstatSync: jest.fn(() => ({
+    isDirectory: () => false
+  })),
+  mkdirSync: jest.fn(),
+  writeFileSync: jest.fn()
+}))
+
 describe('Test javascript compiler', () => {
   let compiler
-
-  beforeAll(() => {
-    jest.spyOn(fs, 'lstatSync').mockImplementation(() => ({
-      isDirectory: () => false
-    }))
-  })
 
   beforeEach(() => {
     jest.clearAllMocks()
