@@ -59,19 +59,25 @@ function createAppTempBuildDir () {
 
 /**
  *
- * @param {string} appDir Directory in project to compile to build folder.
- * @param {string} buildDir The directory to save the compiled files.
+ * @param {string} src Directory in project to compile to build folder.
+ * @param {string} dst The directory to save the compiled files.
+ * @param {boolean} production Whether to run build in production mode or not.
  *
  * @return {Promise<string>} A promise to build the app.
  */
-function runBuild (appDir, buildDir) {
+function runBuild (src, dst, production = false) {
   const language = config.get('language') || 'javascript'
   const Compiler = compilers.getLanguageCompiler(language)
   if (Compiler === null) {
     throw new Error(`No compiler found for ${language}`)
   }
 
-  return new Compiler(appDir, buildDir).compile().then(() => buildDir)
+  const compilerOptions = {}
+  if (production) {
+    compilerOptions.minify = true
+  }
+
+  return new Compiler(compilerOptions).compile(src, dst).then(() => dst)
 }
 
 /**
@@ -104,6 +110,7 @@ function beforeServer (envType) {
       resolve(buildDir)
     })
   }
+
   return createAppTempBuildDir()
     .then((tmpDir) => {
       cleanUp.addDir(tmpDir)
@@ -151,7 +158,8 @@ exports.process = function (command, args) {
 
       runBuild(
         getAppRootDir(),
-        path.join(process.cwd(), getProductionBuildFolder())
+        path.join(process.cwd(), getProductionBuildFolder()),
+        cli.hasFlag(args, '--prod')
       )
         .then(() => {
           console.log('Build finished!')
@@ -191,3 +199,7 @@ exports.process = function (command, args) {
 }
 
 process.on('exit', () => cleanUp.cleanUp())
+
+if (env.getCurrentEnvironment() === 'test') {
+  exports.runBuild = runBuild
+}

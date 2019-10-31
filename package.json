@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage --runInBand --config=jest.config.json",
+    "test:clear-cache": "jest --clearCache",
     "lint:check": "eslint ./src",
     "lint:fix": "eslint --fix ./src"
   },
