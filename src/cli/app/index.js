@@ -59,19 +59,24 @@ function createAppTempBuildDir () {
 
 /**
  *
- * @param {string} appDir Directory in project to compile to build folder.
- * @param {string} buildDir The directory to save the compiled files.
+ * @param {string} src Directory in project to compile to build folder.
+ * @param {string} dst The directory to save the compiled files.
  *
  * @return {Promise<string>} A promise to build the app.
  */
-function runBuild (appDir, buildDir) {
+function runBuild (src, dst) {
   const language = config.get('language') || 'javascript'
   const Compiler = compilers.getLanguageCompiler(language)
   if (Compiler === null) {
     throw new Error(`No compiler found for ${language}`)
   }
 
-  return new Compiler(appDir, buildDir).compile().then(() => buildDir)
+  const compilerOptions = {}
+  if (env.getCurrentEnvironment() === 'production') {
+    compilerOptions.minify = true
+  }
+
+  return new Compiler(compilerOptions).compile(src, dst).then(() => dst)
 }
 
 /**
@@ -104,6 +109,7 @@ function beforeServer (envType) {
       resolve(buildDir)
     })
   }
+
   return createAppTempBuildDir()
     .then((tmpDir) => {
       cleanUp.addDir(tmpDir)
@@ -191,3 +197,7 @@ exports.process = function (command, args) {
 }
 
 process.on('exit', () => cleanUp.cleanUp())
+
+if (env.getCurrentEnvironment() === 'test') {
+  exports.runBuild = runBuild
+}
