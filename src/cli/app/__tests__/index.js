@@ -62,7 +62,7 @@ describe('Test cli/app/index.js', () => {
       configGetSpy = jest.spyOn(config, 'get')
       configGetSpy.mockImplementation(() => 'javascript')
 
-      app.runBuild('/src/path', '/dst/path')
+      app.runBuild('/src/path', '/dst/path', true)
 
       // Call with minify option if in production
       expect(mockCompilerSpy).toHaveBeenCalledWith({ minify: true })

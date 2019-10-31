@@ -61,10 +61,11 @@ function createAppTempBuildDir () {
  *
  * @param {string} src Directory in project to compile to build folder.
  * @param {string} dst The directory to save the compiled files.
+ * @param {boolean} production Whether to run build in production mode or not.
  *
  * @return {Promise<string>} A promise to build the app.
  */
-function runBuild (src, dst) {
+function runBuild (src, dst, production = false) {
   const language = config.get('language') || 'javascript'
   const Compiler = compilers.getLanguageCompiler(language)
   if (Compiler === null) {
@@ -72,7 +73,7 @@ function runBuild (src, dst) {
   }
 
   const compilerOptions = {}
-  if (env.getCurrentEnvironment() === 'production') {
+  if (production) {
     compilerOptions.minify = true
   }
 
@@ -157,7 +158,8 @@ exports.process = function (command, args) {
 
       runBuild(
         getAppRootDir(),
-        path.join(process.cwd(), getProductionBuildFolder())
+        path.join(process.cwd(), getProductionBuildFolder()),
+        cli.hasFlag(args, '--prod')
       )
         .then(() => {
           console.log('Build finished!')
