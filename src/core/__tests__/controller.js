@@ -7,19 +7,6 @@ describe('Test @Controller() Decorator', () => {
     Controller = function () {}
   })
 
-  it('should set _type to controlller', () => {
-    const Decorated = controllerDecorator()(Controller)
-    expect(new Decorated()._type).toEqual('controller')
-  })
-
-  it('should throw an error if there is an attempt to change the _type', () => {
-    const Decorated = controllerDecorator()(Controller)
-    expect(() => {
-      // An attempt to change a controller type to model type
-      new Decorated()._type = 'model'
-    }).toThrow()
-  })
-
   it('should set _baseRoute property of controller instance', () => {
     const Decorated = controllerDecorator({ baseRoute: '/api/v1.0' })(Controller)
     expect(new Decorated()._baseRoute).toEqual('/api/v1.0')

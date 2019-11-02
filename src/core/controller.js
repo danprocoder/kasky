@@ -2,11 +2,6 @@ const injector = require('./injector')
 
 module.exports = function Controller (properties = {}) {
   return function (target) {
-    Object.defineProperty(target.prototype, '_type', {
-      get: () => 'controller',
-      set: () => { throw new Error('Illegal Operation') }
-    })
-
     const { baseRoute, use } = properties
 
     // Base route for all functions.

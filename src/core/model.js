@@ -6,13 +6,6 @@ function Model (options) {
   }
 
   return function (target) {
-    Object.defineProperty(target.prototype, '_type', {
-      get: () => 'model',
-      set: () => {
-        throw new Error('Illegal Option')
-      }
-    })
-
     if (options.table) {
       target.prototype.table = options.table
     }
