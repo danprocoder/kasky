@@ -187,6 +187,10 @@ exports.process = function (command, args) {
               cli.log('Server running at',
                 `${chalk.green(`127.0.0.1:${options.port}`)}.`,
                 'Use Ctrl + C to stop server.')
+
+              if (typeof app.onStart === 'function') {
+                app.onStart()
+              }
             })
         })
         .catch((error) => {
