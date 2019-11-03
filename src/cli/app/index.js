@@ -188,8 +188,8 @@ exports.process = function (command, args) {
                 `${chalk.green(`127.0.0.1:${options.port}`)}.`,
                 'Use Ctrl + C to stop server.')
 
-              if (typeof app.onStart === 'function') {
-                app.onStart()
+              if (typeof app.default.onStart === 'function') {
+                app.default.onStart()
               }
             })
         })
