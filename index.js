@@ -1,8 +1,8 @@
-const Model = require('./core/model');
-const Controller = require('./core/controller');
-const Middleware = require('./core/middleware');
-const Server = require('./core/server');
-const Route = require('./core/route');
+const Model = require('./src/core/model')
+const Controller = require('./src/core/controller')
+const Middleware = require('./src/core/middleware')
+const Server = require('./src/core/server')
+const Route = require('./src/core/route/proxies')
 
 module.exports = {
   Model,
@@ -10,4 +10,4 @@ module.exports = {
   Middleware,
   Server,
   Route
-};
+}

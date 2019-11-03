@@ -1,7 +1,7 @@
 const http = require('http')
 const url = require('url')
 const os = require('os')
-const route = require('./route')
+const routeResolver = require('./route/resolver')
 const Request = require('../helpers/request')
 const Response = require('../helpers/response')
 
@@ -47,7 +47,7 @@ Server.prototype._onHttpRequest = function (req, res) {
   req.on('end', () => {
     const { pathname } = url.parse(req.url)
 
-    const resolver = route.getRouteHandler(req.method, pathname)
+    const resolver = routeResolver.resolve(req.method, pathname)
     if (resolver) {
       const request = new Request(req, data.toString())
       const response = new Response(res)

@@ -174,7 +174,7 @@ exports.process = function (command, args) {
 
       beforeServer(envType)
         .then((buildDir) => {
-          appLoader.loadApp(buildDir)
+          const app = appLoader.loadApp(buildDir)
 
           cli.log('Starting server...')
 
@@ -187,10 +187,15 @@ exports.process = function (command, args) {
               cli.log('Server running at',
                 `${chalk.green(`127.0.0.1:${options.port}`)}.`,
                 'Use Ctrl + C to stop server.')
+
+              if (typeof app.default.onStart === 'function') {
+                app.default.onStart()
+              }
             })
         })
         .catch((error) => {
-          cli.error(error)
+          console.log(chalk.red(error))
+          console.log(cli.stackTrace(error.stack))
         })
 
       break

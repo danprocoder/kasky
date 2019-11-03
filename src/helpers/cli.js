@@ -38,3 +38,20 @@ exports.stdout = {
     process.stdout.write(message)
   }
 }
+
+exports.stackTrace = function (stack) {
+  const lines = stack.split('\n')
+
+  return (
+    lines[0].match(/^Error:/i)
+      ? lines.splice(1)
+      : lines
+  )
+    .map(line => {
+      if (!line.match(/^\s*at Object\.</)) {
+        line = chalk.gray(line)
+      }
+      return line
+    })
+    .join('\n')
+}
