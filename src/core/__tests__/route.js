@@ -24,7 +24,7 @@ describe('Test the @Route.*() decorator', () => {
         'handleGet'
       )
       expect(registered.method).toEqual('GET')
-      expect(registered.path).toBeInstanceOf(Path)
+      expect(registered.pathname).toEqual('/users')
       expect(registered.resolveTo.controller).toEqual(Controller.prototype)
       expect(registered.resolveTo.method).toEqual(
         controllerInstance.handleGet
