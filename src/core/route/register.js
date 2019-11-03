@@ -1,5 +1,3 @@
-const Path = require('./path')
-
 module.exports = {
   _routes: [],
 
@@ -19,14 +17,9 @@ module.exports = {
     methodName,
     config = {}
   ) {
-    const path = new Path(
-      controller._baseRoute || '',
-      pathname
-    )
-
     const route = {
       method,
-      path,
+      pathname,
       resolveTo: {
         controller,
         method: controller[methodName]

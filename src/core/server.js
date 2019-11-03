@@ -68,6 +68,7 @@ Server.prototype._onHttpRequest = function (req, res) {
         resolver.method(request, response)
       }
     } else {
+      console.log('Unable to resolve', req.method, pathname)
       res.writeHead(404)
       res.write(`Unable to resolve ${req.method} ${pathname}`)
       res.end()

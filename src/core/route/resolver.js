@@ -1,4 +1,5 @@
 const register = require('./register')
+const Path = require('./path')
 
 /**
  * @param {string} method The HTTP request method
@@ -8,7 +9,11 @@ const register = require('./register')
  */
 exports.resolve = function (method, pathname) {
   const route = register._routes.find(route => {
-    return route.method === method && route.path.match(pathname)
+    const routePath = new Path(
+      route.resolveTo.controller._baseRoute || '',
+      route.pathname
+    )
+    return route.method === method && routePath.match(pathname)
   })
   return route ? {
     ...route.resolveTo,
