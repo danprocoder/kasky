@@ -15,7 +15,6 @@ describe('Test the @Route.*() decorator', () => {
     it('should register a route', () => {
       function Controller () {}
       Controller.prototype.handleGet = function () {}
-      const controllerInstance = new Controller()
 
       const registered = register.register(
         'GET',
@@ -26,9 +25,7 @@ describe('Test the @Route.*() decorator', () => {
       expect(registered.method).toEqual('GET')
       expect(registered.pathname).toEqual('/users')
       expect(registered.resolveTo.controller).toEqual(Controller.prototype)
-      expect(registered.resolveTo.method).toEqual(
-        controllerInstance.handleGet
-      )
+      expect(registered.resolveTo.methodName).toEqual('handleGet')
       expect(registered.middlewares).toEqual([])
       expect(register._routes).toContain(registered)
     })
@@ -172,11 +169,15 @@ describe('Test the @Route.*() decorator', () => {
     it('should return createBlog() method', () => {
       const resolved = resolver.resolve('POST', '/api/v1/blog')
       expect(typeof resolved).toEqual('object')
+      // Resolve method should be bounded
+      expect(typeof resolved.method.prototype).toEqual('undefined')
     })
 
     it('should return getAllBlogs() method', () => {
       const resolved = resolver.resolve('GET', '/api/v1/blog')
       expect(typeof resolved).toEqual('object')
+      // Resolve method should be bounded
+      expect(typeof resolved.method.prototype).toEqual('undefined')
     })
 
     // it('should return deleteBlog() method', () => {
@@ -214,24 +215,32 @@ describe('Test the @Route.*() decorator', () => {
     it('should return a handler for GET /api/users/', () => {
       const handler = resolver.resolve('GET', '/api/users/')
       expect(typeof handler).toEqual('object')
+      // Handler method must be a bounded method
+      expect(typeof handler.method.prototype).toEqual('undefined')
       expect(handler.method()).toEqual('all users')
     })
 
     it('should return a handler for GET /api/users (without trailing slash)', () => {
       const handler = resolver.resolve('GET', '/api/users')
       expect(typeof handler).toEqual('object')
+      // Handler method must be a bounded method
+      expect(typeof handler.method.prototype).toEqual('undefined')
       expect(handler.method()).toEqual('all users')
     })
 
     it('should return a handler for GET /api/users/blogs', () => {
       const handler = resolver.resolve('GET', '/api/users/blogs')
       expect(typeof handler).toEqual('object')
+      // Handler method must be a bounded method
+      expect(typeof handler.method.prototype).toEqual('undefined')
       expect(handler.method()).toEqual('all blogs')
     })
 
     it('should return a handler for GET api/users/blogs (without preceding /)', () => {
       const handler = resolver.resolve('GET', 'api/users/blogs')
       expect(typeof handler).toEqual('object')
+      // Handler method must be a bounded method
+      expect(typeof handler.method.prototype).toEqual('undefined')
       expect(handler.method()).toEqual('all blogs')
     })
   })

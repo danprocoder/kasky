@@ -15,8 +15,14 @@ exports.resolve = function (method, pathname) {
     )
     return route.method === method && routePath.match(pathname)
   })
-  return route ? {
-    ...route.resolveTo,
-    middlewares: route.middlewares
-  } : false
+  if (route) {
+    const { controller, methodName } = route.resolveTo
+    return {
+      controller: controller,
+      method: controller[methodName],
+      middlewares: route.middlewares
+    }
+  }
+
+  return false
 }

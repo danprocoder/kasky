@@ -22,7 +22,7 @@ module.exports = {
       pathname,
       resolveTo: {
         controller,
-        method: controller[methodName]
+        methodName
       },
       middlewares: config.middlewares || []
     }

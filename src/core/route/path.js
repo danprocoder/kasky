@@ -1,5 +1,4 @@
 function Path (...paths) {
-  console.log(paths)
   paths = paths
     .map(path =>
       typeof path === 'string' && this._removeTrailingSlash(path.trim())
