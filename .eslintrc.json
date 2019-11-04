@@ -15,6 +15,7 @@
     },
     "rules": {
         "standard/no-callback-literal": 0,
-        "node/no-deprecated-api": 0
+        "node/no-deprecated-api": 0,
+        "no-cond-assign": 0
     }
 }

@@ -15,7 +15,7 @@ function parseParams (params) {
   } else if (params.length === 1) {
     // Parameter is assumed to be a route if it is a string or a
     // config object is it is an object.
-    if (typeof params[0] === 'string') {
+    if (typeof params[0] === 'string' || params[0] instanceof Array) {
       path = params[0]
     } else if (typeof params[0] === 'object') {
       config = params[0]
@@ -34,7 +34,13 @@ function getDecorator (method, ...args) {
   const { path, config } = parseParams(args)
 
   return function (target, name, descriptor) {
-    register.register(method, path, target, name, config)
+    if (path instanceof Array) {
+      path.forEach(path =>
+        register.register(method, path, target, name, config)
+      )
+    } else {
+      register.register(method, path, target, name, config)
+    }
 
     // Return custom descriptor.
     return {

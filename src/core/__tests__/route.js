@@ -57,6 +57,11 @@ describe('Test the @Route.*() decorator', () => {
       jest.spyOn(register, 'register')
     })
 
+    afterEach(() => {
+      register._routes = []
+      jest.clearAllMocks()
+    })
+
     it('decorator should register a new route and return a custom descriptor', () => {
       function Controller () {}
       Controller.prototype.handleGet = function () {}
@@ -75,6 +80,23 @@ describe('Test the @Route.*() decorator', () => {
         'handleGet',
         {} // By default, a default empty object {} is passed as config
       )
+    })
+
+    it('decorator should register a new route with an array', () => {
+      function Controller () {}
+      Controller.prototype.handleGet = function () {}
+
+      const decorator = methodDecorator.getDecorator('GET', ['/user', '/user/{id}'])
+      decorator(Controller.prototype, 'handleGet', {
+        value: Controller.prototype.handleGet
+      })
+
+      expect(register._routes.length).toEqual(2)
+      expect(register.register).toHaveBeenCalledTimes(2)
+      expect(register.register.mock.calls).toEqual([
+        ['GET', '/user', Controller.prototype, 'handleGet', {}],
+        ['GET', '/user/{id}', Controller.prototype, 'handleGet', {}]
+      ])
     })
   })
 
@@ -180,15 +202,15 @@ describe('Test the @Route.*() decorator', () => {
       expect(typeof resolved.method.prototype).toEqual('undefined')
     })
 
-    // it('should return deleteBlog() method', () => {
-    //   const resolved = resolver.resolve('DELETE', '/api/v1/blog/6')
-    //   expect(typeof resolved).toEqual('object')
-    // })
+    it('should return deleteBlog() method', () => {
+      const resolved = resolver.resolve('DELETE', '/api/v1/blog/6')
+      expect(typeof resolved).toEqual('object')
+    })
 
-    // it('should return editBlog() method', () => {
-    //   const resolved = resolver.resolve('PATCH', '/api/v1/blog/6')
-    //   expect(typeof resolved).toEqual('object')
-    // })
+    it('should return editBlog() method', () => {
+      const resolved = resolver.resolve('PATCH', '/api/v1/blog/6')
+      expect(typeof resolved).toEqual('object')
+    })
   })
 
   describe('Test resolvers with controller base routes', () => {
@@ -253,7 +275,7 @@ describe('Test the @Route.*() decorator', () => {
       expect(new Path('    /path/', '/to/    ', '    somewhere/')._pathname).toEqual('path/to/somewhere')
     })
 
-    it('should match routes correctly', () => {
+    it('should match routes correctly (with / at beginning or )', () => {
       const path = new Path('base', '/')
       expect(path.match('base')).toBeTruthy()
       expect(path.match('/base')).toBeTruthy()
