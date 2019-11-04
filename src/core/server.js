@@ -49,7 +49,7 @@ Server.prototype._onHttpRequest = function (req, res) {
 
     const resolver = routeResolver.resolve(req.method, pathname)
     if (resolver) {
-      const request = new Request(req, data.toString())
+      const request = new Request(req, resolver.url.params, data.toString())
       const response = new Response(res)
       // Run middlewares
       if (resolver.middlewares.length > 0) {

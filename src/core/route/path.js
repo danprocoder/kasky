@@ -1,3 +1,5 @@
+const pathToRegex = require('../../helpers/pathToRegex')
+
 function Path (...paths) {
   paths = paths
     .map(path =>
@@ -5,6 +7,7 @@ function Path (...paths) {
     )
 
   this._pathname = this._removeTrailingSlash(paths.join('/'))
+  this._regex = pathToRegex(this._pathname)
 }
 
 Path.prototype._removeTrailingSlash = function (path) {
@@ -12,8 +15,12 @@ Path.prototype._removeTrailingSlash = function (path) {
 }
 
 Path.prototype.match = function (pathname) {
-  pathname = this._removeTrailingSlash(pathname)
-  return pathname === this._pathname
+  // Ensure pathname begins with a backslash before testing
+  if (!pathname.match(/^\//)) {
+    pathname = '/' + pathname
+  }
+  pathname = pathname.replace(/\/+$/, '')
+  return this._regex.exec(pathname)
 }
 
 module.exports = Path
