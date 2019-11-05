@@ -5,23 +5,25 @@ const routeResolver = require('./route/resolver')
 const Request = require('../helpers/request')
 const Response = require('../helpers/response')
 
-function MiddlewareHandler (middlewares, req, res, onFinished) {
+function MiddlewareHandler (middlewares, req, res) {
   this.i = 0
 
   this.middlewares = middlewares
   this.req = req
   this.res = res
-  this.onFinished = onFinished
+  this._promise = { resolve: null }
 }
+
 MiddlewareHandler.prototype.next = function () {
   this.i++
   if (this.i >= this.middlewares.length) {
-    this.onFinished()
+    this._promise.resolve()
   } else {
-    this.run()
+    this._handle()
   }
 }
-MiddlewareHandler.prototype.run = function () {
+
+MiddlewareHandler.prototype._handle = function () {
   if (this.i < this.middlewares.length) {
     new this.middlewares[this.i]()
       .handle(
@@ -30,6 +32,16 @@ MiddlewareHandler.prototype.run = function () {
         this.next.bind(this)
       )
   }
+}
+
+MiddlewareHandler.prototype.run = function () {
+  const promise = new Promise(resolve => {
+    this._promise.resolve = resolve
+  })
+
+  this._handle()
+
+  return promise
 }
 
 function Server (config) {
@@ -51,19 +63,14 @@ Server.prototype._onHttpRequest = function (req, res) {
     if (resolver) {
       const request = new Request(req, resolver.url.params, data.toString())
       const response = new Response(res)
+
       // Run middlewares
       if (resolver.middlewares.length > 0) {
-        new MiddlewareHandler(
-          resolver.middlewares,
-          request,
-          response,
-          () => {
-            resolver.method(
-              request,
-              response
-            )
-          }
-        ).run()
+        new MiddlewareHandler(resolver.middlewares, request, response)
+          .run()
+          .then(() => {
+            resolver.method(request, response)
+          })
       } else {
         resolver.method(request, response)
       }
