@@ -19,10 +19,14 @@ module.exports = {
     if (!name) {
       throw new Error('Name of controller class not supplied')
     }
-    string.validateClassname(name)
 
-    const fileName = `${string.camelCaseToFilename(name)}.js`
-    const controllersPath = config.get('controllersPath')
+    const className = path.basename(name)
+    const subDir = path.dirname(name).replace(/^\/+|\/+$/g, '')
+
+    string.validateClassname(className)
+
+    const fileName = `${string.camelCaseToFilename(className)}.js`
+    const controllersPath = path.join(config.get('controllersPath'), subDir)
     fs.mkdirSync(controllersPath, { recursive: true })
 
     cli.log('Generating', path.join(controllersPath, fileName))
@@ -30,7 +34,7 @@ module.exports = {
     template.insertFile(
       path.join(__dirname, 'templates/controller'),
       path.join(controllersPath, fileName),
-      { package: packageJson.name, name }
+      { package: packageJson.name, name: className }
     )
 
     cli.log(chalk.green('Generated'), path.join(controllersPath, fileName))
@@ -44,15 +48,21 @@ module.exports = {
         'Use the --name=YourModelClass option to specify a class name.'
       )
     }
-    string.validateClassname(name)
 
-    const table = cli.extractParam(args, 'table')
+    const className = path.basename(name)
+    const subDir = path.dirname(name).replace(/^\/+|\/+$/g, '')
+
+    string.validateClassname(className)
+
+    let table = cli.extractParam(args, 'table')
     if (table) {
       string.validateTablename(table)
+    } else {
+      table = string.camelCaseToFilename(className, '_')
     }
 
-    const fileName = `${string.camelCaseToFilename(name)}.js`
-    const modelsPath = config.get('modelsPath')
+    const fileName = `${string.camelCaseToFilename(className)}.js`
+    const modelsPath = path.join(config.get('modelsPath'), subDir)
     fs.mkdirSync(modelsPath, { recursive: true })
 
     cli.log('Generating', path.join(modelsPath, fileName))
@@ -62,7 +72,7 @@ module.exports = {
       path.join(modelsPath, fileName),
       {
         package: packageJson.name,
-        name,
+        name: className,
         decoratorData: table ? `{\r\n  table: '${table}'\r\n}` : ''
       }
     )
@@ -117,13 +127,17 @@ module.exports = {
         'Use the --name=YourMiddleware option to specify the classname.'
       )
     }
-    string.validateClassname(name)
 
-    const middlewaresPath = config.get('middlewaresPath')
+    const className = path.basename(name)
+    const subDir = path.dirname(name).replace(/^\/+|\/+$/g, '')
+
+    string.validateClassname(className)
+
+    const middlewaresPath = path.join(config.get('middlewaresPath'), subDir)
     fs.mkdirSync(middlewaresPath, { recursive: true })
 
     const targetFilePath = path.join(
-      middlewaresPath, string.camelCaseToFilename(name).concat('.js')
+      middlewaresPath, string.camelCaseToFilename(className).concat('.js')
     )
 
     cli.log('Generating', chalk.gray(targetFilePath))
@@ -131,7 +145,7 @@ module.exports = {
     template.insertFile(
       path.join(__dirname, 'templates/middleware'),
       targetFilePath,
-      { name }
+      { name: className }
     )
 
     cli.log(chalk.green('Generated'), chalk.gray(targetFilePath))

@@ -77,6 +77,24 @@ describe('Test commands to create generate files', () => {
         templatePath, outputPath, { name: 'ValidateUser' }
       )
     })
+
+    it('should create a new middleware file in a subdirectory', () => {
+      const filename = 'validate-user.js'
+      const className = 'ValidateUser'
+      const migrationDir = path.join(testConfig.middlewaresPath, 'sub/dir')
+
+      fileMaker.process('make:middleware', [`--name=sub/dir/${className}`])
+
+      expect(string.validateClassname).toHaveBeenCalledWith(className)
+
+      expect(fs.mkdirSync).toHaveBeenCalledWith(migrationDir, { recursive: true })
+
+      expect(template.insertFile).toHaveBeenCalledWith(
+        path.join(templateDir, 'middleware'),
+        path.join(migrationDir, filename),
+        { name: className }
+      )
+    })
   })
 
   describe('Test feature to create a controller file', () => {
@@ -116,6 +134,30 @@ describe('Test commands to create generate files', () => {
       expect(template.insertFile).toHaveBeenCalledWith(
         path.join(templateDir, 'controller'),
         path.join(testConfig.controllersPath, fileName),
+        { package: packageJson.name, name: className }
+      )
+    })
+
+    it('should create a new controller file in a subdirectory', () => {
+      const fileName = 'my-new-controller.js'
+      const className = 'MyNewController'
+      const controllerDir = path.join(testConfig.controllersPath, 'sub/dir')
+
+      fileMaker.makeControllerFile([`--name=/sub/dir/${className}`])
+
+      // Must validate classname
+      expect(string.validateClassname).toHaveBeenCalledWith(className)
+
+      // Should attempt to create the directory to save the controller class
+      expect(fs.mkdirSync).toHaveBeenCalledWith(
+        path.join(controllerDir),
+        { recursive: true }
+      )
+
+      // Should insert the template file
+      expect(template.insertFile).toHaveBeenCalledWith(
+        path.join(templateDir, 'controller'),
+        path.join(controllerDir, fileName),
         { package: packageJson.name, name: className }
       )
     })
@@ -162,7 +204,7 @@ describe('Test commands to create generate files', () => {
     })
   })
 
-  describe('Test feature to make a model file from the command lind', () => {
+  describe('Test feature to make a model file from the command line', () => {
     afterEach(() => jest.clearAllMocks())
 
     it('should call function to create a model file', () => {
@@ -201,7 +243,7 @@ describe('Test commands to create generate files', () => {
         {
           package: packageJson.name,
           name: 'UsersBlogs',
-          decoratorData: ''
+          decoratorData: "{\r\n  table: 'users_blogs'\r\n}"
         }
       )
     })
@@ -226,5 +268,39 @@ describe('Test commands to create generate files', () => {
         }
       )
     })
+
+    it('should create a new model file in a subdirectory', () => {
+      const fileName = 'users-blogs.js'
+      const className = 'UsersBlogs'
+      const modelDir = path.join(testConfig.modelsPath, 'sub/dir')
+
+      fileMaker.makeModelFile([`--name=sub/dir/${className}`])
+
+      expect(string.validateClassname).toHaveBeenCalledWith(className)
+
+      expect(fs.mkdirSync).toHaveBeenCalledWith(modelDir, { recursive: true })
+
+      expect(template.insertFile).toHaveBeenCalledWith(
+        path.join(templateDir, 'model'),
+        path.join(modelDir, fileName),
+        {
+          package: packageJson.name,
+          name: className,
+          decoratorData: "{\r\n  table: 'users_blogs'\r\n}"
+        }
+      )
+    })
   })
 })
+
+// const migration = {
+//   table: 'Users',
+//   fields: [
+//     Type.string('firstname', 255).unique(),
+//     Type.integer('age').acceptNull(false).default(),
+//   ],
+//   relations: [
+//     belongsTo('users.id')
+//   ],
+//   primaryKey: 'firstname'
+// }

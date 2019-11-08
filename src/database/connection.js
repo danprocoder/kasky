@@ -14,4 +14,10 @@ const pool = mysql.createPool({
   queueLimit: 0
 })
 
-module.exports = pool.promise()
+exports.getDatabase = function () {
+  return pool.promise().getConnection()
+}
+
+exports.escape = function (str) {
+  return pool.escape(str)
+}
