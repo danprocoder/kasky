@@ -1,19 +1,29 @@
 const pool = require('../database/connection')
+const highlight = require('cli-highlight').highlight
 
 module.exports = function (table) {
   return {
     run (sql, ...params) {
-      console.log(sql)
+      console.log(highlight(sql, { language: 'sql', ignoreIllegals: true }))
 
-      return pool.execute(sql, params)
-        .then((result) => ({
-          getRows: () => result[0],
-          getFirstRow: () => result[0][0]
-        }))
+      return pool.getDatabase()
+        .then(connection => {
+          return connection.execute(sql, params)
+            .then(result => {
+              return { connection, result }
+            })
+        })
+        .then(payload => {
+          payload.connection.release()
+
+          return {
+            getRows: () => payload.result[0],
+            getFirstRow: () => payload.result[0][0]
+          }
+        })
     },
 
     insert (data) {
-      console.log('Inserting', data)
       if (data instanceof Array) {
         return this._insertMany(data)
       }
@@ -28,9 +38,20 @@ module.exports = function (table) {
 
       const escapedFields = fields.map((field) => `\`${field}\``).join(', ')
       const questionMarks = values.map(() => '?').join(', ')
-      return this.run(`INSERT INTO \`${table}\`(${escapedFields})VALUES(${questionMarks})`, ...values)
-        .then(() => this.run(`SELECT * FROM \`${table}\` WHERE id=LAST_INSERT_ID()`))
-        .then((result) => result.getFirstRow())
+
+      return pool.getDatabase()
+        .then(connection =>
+          connection.execute(`INSERT INTO \`${table}\`(${escapedFields})VALUES(${questionMarks})`, values)
+            .then(() => connection)
+        )
+        .then(connection =>
+          connection.execute(`SELECT * FROM \`${table}\` WHERE id=LAST_INSERT_ID()`)
+            .then(result => {
+              connection.release()
+
+              return result[0][0]
+            })
+        )
     },
 
     _insertMany (data) {

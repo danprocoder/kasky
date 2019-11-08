@@ -1,8 +1,8 @@
-exports.camelCaseToFilename = function (name) {
+exports.camelCaseToFilename = function (name, sep = '-') {
   return name
-    .replace(/[A-Z][a-z]/g, (match) => `-${match}`)
-    .replace(/([a-z])([A-Z])/g, (match, p1, p2) => `${p1}-${p2}`)
-    .replace(/^-|-$/g, '')
+    .replace(/[A-Z][a-z]/g, (match) => `${sep}${match}`)
+    .replace(/([a-z])([A-Z])/g, (match, p1, p2) => `${p1}${sep}${p2}`)
+    .replace(new RegExp(`^${sep}|${sep}$`, 'g'), '')
     .toLowerCase()
 }
 

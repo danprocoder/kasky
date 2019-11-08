@@ -2,6 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/danprocoder/node-api-framework.svg?style=svg)](https://circleci.com/gh/danprocoder/node-api-framework) [![codecov](https://codecov.io/gh/danprocoder/node-api-framework/branch/development/graph/badge.svg)](https://codecov.io/gh/danprocoder/node-api-framework)
 
+This project is still under development and first version will be published soon.
+
 ## Installation
 Using npm:
 ```bash
