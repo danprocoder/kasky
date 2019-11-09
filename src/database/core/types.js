@@ -49,11 +49,18 @@ function boolean () {
   })
 }
 
+function datetime () {
+  return new Type({
+    name: 'datetime'
+  })
+}
+
 module.exports = {
   string,
   integer,
   float,
   decimal,
   double,
-  boolean
+  boolean,
+  datetime
 }

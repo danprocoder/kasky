@@ -40,5 +40,25 @@ module.exports = {
    *
    * @return {Column} Returns a column object.
    */
-  double: (name, precision, decimalPlace) => new Column(name, type.double(precision, decimalPlace))
+  double: (name, precision, decimalPlace) => new Column(name, type.double(precision, decimalPlace)),
+
+  /**
+   * Helper function to create a field to hold data with 'float' data type.
+   *
+   * @param {string} name The name of the field.
+   * @param {precision} number The precision.
+   * @param {decimalPlace} number The number of decimal places.
+   *
+   * @return {Column} Returns a column object.
+   */
+  float: (name, precision, decimalPlace) => new Column(name, type.float(precision, decimalPlace)),
+
+  /**
+   * Helper function to create a field to hold value with 'datetime' data type.
+   *
+   * @param {string} name The name of the field.
+   *
+   * @return {Column} Returns a column object.
+   */
+  datetime: name => new Column(name, type.datetime())
 }

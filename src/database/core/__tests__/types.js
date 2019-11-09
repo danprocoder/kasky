@@ -43,4 +43,10 @@ describe('Test types', () => {
       name: 'boolean'
     })
   })
+
+  it('should return a datetime description', () => {
+    expect(types.datetime().getDescription()).toEqual({
+      name: 'datetime'
+    })
+  })
 })

@@ -21,4 +21,14 @@ describe('Test functions to create a column', () => {
     const col = column.increment('test_col')
     expect(col).toBeInstanceOf(Column)
   })
+
+  it('should create float column', () => {
+    const col = column.float('test_col', 2, 2)
+    expect(col).toBeInstanceOf(Column)
+  })
+
+  it('should create a datetime column', () => {
+    const col = column.datetime('birthdate')
+    expect(col).toBeInstanceOf(Column)
+  })
 })

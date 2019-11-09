@@ -1,18 +1,13 @@
-module.exports = function() {
+import { Schema, Column } from 'pretty-api/database'
 
-  this.up = function(schema) {
-    return schema.create('%{table}', {
-      id: {
-        dataType: 'INT',
-        nullable: false,
-        autoIncrement: true,
-        primaryKey: true
-      }
-    });
-  };
+export default class {
+  up() {
+    return Schema.table('%{table}').create([
+      Column.increment('id')
+    ]).primaryKeys(['id'])
+  }
 
-  this.down = function(schema) {
-    return schema.drop('%{table}');
-  };
-
+  down() {
+    return Schema.table('%{table}').drop()
+  }
 }

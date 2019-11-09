@@ -1,7 +1,7 @@
-const Migration = require('./migration/migration')
 const Schema = require('./schema')
+const Column = require('./schema/column')
 
 module.exports = {
-  Migration,
-  Schema
+  Schema,
+  Column
 }

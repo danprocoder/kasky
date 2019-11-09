@@ -30,6 +30,11 @@ module.exports = function (description) {
       type = `DECIMAL(${description.precision}, ${description.decimalPlace})`
 
       break
+
+    case 'datetime':
+      type = 'DATETIME'
+
+      break
   }
 
   return type
