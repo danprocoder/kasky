@@ -38,6 +38,17 @@ describe('Test response object', () => {
     })
   })
 
+  it('should call send() with the right parameters', () => {
+    res.success(null, 'json')
+    expect(res.send).toHaveBeenCalledWith(200, null, 'json')
+
+    res.success('text')
+    expect(res.send).toHaveBeenCalledWith(200, 'text', null)
+
+    res.success()
+    expect(res.send).toHaveBeenCalledWith(200, null, null)
+  })
+
   it('should set status code and call end()', () => {
     res.send(200)
 
