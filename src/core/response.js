@@ -7,8 +7,9 @@ const statuses = {
   success: 200,
   created: 201,
   notFound: 404,
-  forbidden: 400,
+  badRequest: 400,
   unauthorized: 401,
+  forbidden: 403,
   internalServerError: 500
 }
 Object.keys(statuses).forEach((funcName) => {
