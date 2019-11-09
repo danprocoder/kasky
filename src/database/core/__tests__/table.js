@@ -19,7 +19,8 @@ describe('Test Table', () => {
       name: 'users',
       columns: fields.map(col => col.getDescription()),
       collate: null,
-      primaryKeys: []
+      primaryKeys: [],
+      unique: []
     })
   })
 
@@ -30,7 +31,8 @@ describe('Test Table', () => {
       name: 'users',
       columns: fields.map(col => col.getDescription()),
       collate: 'utf-8',
-      primaryKeys: []
+      primaryKeys: [],
+      unique: []
     })
   })
 
@@ -41,7 +43,20 @@ describe('Test Table', () => {
       name: 'users',
       columns: fields.map(col => col.getDescription()),
       collate: 'utf-8',
-      primaryKeys: ['id']
+      primaryKeys: ['id'],
+      unique: []
+    })
+  })
+
+  it('should set unique keys', () => {
+    expect(table.unique(['email'])).toEqual(table)
+
+    expect(table.getDescription()).toEqual({
+      name: 'users',
+      columns: fields.map(col => col.getDescription()),
+      collate: 'utf-8',
+      primaryKeys: ['id'],
+      unique: ['email']
     })
   })
 })

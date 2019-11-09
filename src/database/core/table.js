@@ -3,7 +3,8 @@ function Table (name, columns) {
     name,
     columns: columns.map(col => col.getDescription()),
     collate: null,
-    primaryKeys: []
+    primaryKeys: [],
+    unique: []
   }
 }
 
@@ -14,6 +15,11 @@ Table.prototype.collate = function (collate) {
 
 Table.prototype.primaryKeys = function (columnNames) {
   this._description.primaryKeys = columnNames
+  return this
+}
+
+Table.prototype.unique = function (columnNames) {
+  this._description.unique = columnNames
   return this
 }
 

@@ -13,7 +13,7 @@ describe('Test Column', () => {
       name: 'test_col',
       type: types.boolean().getDescription(),
       nullable: true,
-      unique: false
+      autoIncrement: false
     })
   })
 
@@ -24,7 +24,7 @@ describe('Test Column', () => {
       name: 'test_col',
       type: types.boolean().getDescription(),
       nullable: false,
-      unique: false
+      autoIncrement: false
     })
   })
 
@@ -35,29 +35,18 @@ describe('Test Column', () => {
       name: 'test_col',
       type: types.boolean().getDescription(),
       nullable: true,
-      unique: false
+      autoIncrement: false
     })
   })
 
-  it('should change unique property to true if no argument is supplied', () => {
-    expect(column.unique()).toEqual(column)
+  it('should set autoIncrement property to true', () => {
+    expect(column.autoIncrement()).toEqual(column)
 
     expect(column.getDescription()).toEqual({
       name: 'test_col',
       type: types.boolean().getDescription(),
       nullable: true,
-      unique: true
-    })
-  })
-
-  it('should change unique property to false', () => {
-    expect(column.unique(false)).toEqual(column)
-
-    expect(column.getDescription()).toEqual({
-      name: 'test_col',
-      type: types.boolean().getDescription(),
-      nullable: true,
-      unique: false
+      autoIncrement: true
     })
   })
 })

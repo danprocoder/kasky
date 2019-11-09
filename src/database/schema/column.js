@@ -29,5 +29,16 @@ module.exports = {
    *
    * @param {string} name The name of the column.
    */
-  increment: (name) => new Column(name, type.integer()).allowNull(false)
+  increment: (name) => new Column(name, type.integer()).allowNull(false).autoIncrement(),
+
+  /**
+   * Helper function to create a field to hold data with 'double' data type.
+   *
+   * @param {string} name The name of the field.
+   * @param {precision} number The precision.
+   * @param {decimalPlace} number The number of decimal places.
+   *
+   * @return {Column} Returns a column object.
+   */
+  double: (name, precision, decimalPlace) => new Column(name, type.double(precision, decimalPlace))
 }
