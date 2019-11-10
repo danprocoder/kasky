@@ -3,10 +3,28 @@ const url = require('url')
 function Request (req, params, body) {
   const contentType = req.headers['content-type']
 
-  this.headers = req.headers
-  this.query = url.parse(req.url, true).query
-  this.params = params
-  this.body = this._parseRequestBody(contentType, body)
+  this._headers = req.headers
+  this._query = url.parse(req.url, true).query
+  this._params = params
+  this._body = this._parseRequestBody(contentType, body)
+}
+
+Request.prototype.header = function (key) {
+  return this._headers[key] || null
+}
+
+Request.prototype.query = function (key) {
+  return this._query[key] || null
+}
+
+Request.prototype.param = function (key) {
+  return this._params[key] || null
+}
+
+Request.prototype.body = function (key) {
+  return typeof this._body === 'object'
+    ? (this._body[key] || null)
+    : null
 }
 
 Request.prototype._parseRequestBody = function (contentType, body) {

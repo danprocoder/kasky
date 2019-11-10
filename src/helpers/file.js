@@ -47,7 +47,7 @@ function readString (filepath) {
  */
 function createCacheDir (...folders) {
   return new Promise((resolve, reject) => {
-    const tmpDir = path.join(os.tmpdir(), 'pretty-api', ...folders)
+    const tmpDir = path.join(os.tmpdir(), 'kasky', ...folders)
 
     fs.mkdir(tmpDir, { recursive: true }, (err) => {
       if (!err) {

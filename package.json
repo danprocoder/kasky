@@ -1,13 +1,17 @@
 {
-  "name": "pretty-api",
+  "name": "kasky",
   "version": "1.0.0",
-  "description": "",
+  "description": "A light weight, easy to use web framework for node.js",
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage --runInBand --config=jest.config.json",
     "test:clear-cache": "jest --clearCache",
     "lint:check": "eslint ./src",
     "lint:fix": "eslint --fix ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danprocoder/kasky"
   },
   "author": "Daniel Austin",
   "license": "ISC",

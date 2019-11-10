@@ -1,4 +1,4 @@
-import { Middleware } from 'pretty-api';
+import { Middleware } from 'kasky';
 
 @Middleware()
 class %{name} {
