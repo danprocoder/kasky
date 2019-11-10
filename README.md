@@ -1,6 +1,6 @@
 # Kasky framework for node.js
 
-[![CircleCI](https://circleci.com/gh/danprocoder/node-api-framework.svg?style=svg)](https://circleci.com/gh/danprocoder/node-api-framework) [![codecov](https://codecov.io/gh/danprocoder/node-api-framework/branch/development/graph/badge.svg)](https://codecov.io/gh/danprocoder/node-api-framework)
+[![CircleCI](https://circleci.com/gh/danprocoder/kasky.svg?style=svg)](https://circleci.com/gh/danprocoder/kasky) [![codecov](https://codecov.io/gh/danprocoder/kasky/branch/master/graph/badge.svg)](https://codecov.io/gh/danprocoder/kasky)
 
 ## Installation
 Using npm:
@@ -87,25 +87,50 @@ export default MyFirstController;
 
 #### The Request Object
 The request object contains the following properties.
-1. `header(key)`: Returns the value for a HTTP request header sent with key `key`.
-2. `query(key)`: The value for a url query with key `key`.
-3. `param(key)`: Returns the value for a url param with key `key`.
-4. `body(key)`: Returns the value for a request body parameter with key `key`.
+
+##### header(key)
+Returns the value for a HTTP request header sent with key `key`.
+
+##### query(key)
+The value for a url query with key `key`.
+
+##### param(key)
+Returns the value for a url param with key `key`.
+
+##### body(key)
+Returns the value for a request body parameter with key `key`.
 
 #### The Response Object
 The response object contains the following method.
 
-1. `header(key, value)`: Sets the HTTP header. Returns the response object.
-2. `send(statusCode, data = null, contentType = null)`
+##### header(key, value)
+Sets the HTTP header. Returns the response object.
+
+##### send(statusCode, data = null, contentType = null)
+Sends a response to the client
 
 The following are helper methods in the response object.
-1. `success(data = null, contentType = null)`: Sends a response with status code `200`.
-2. `created(data = null, contentType = null)`: Sends a response with status code `201`.
-3. `notFound(data = null, contentType = null)`: Sends a response with status code `404`.
-4. `badRequest(data = null, contentType = null)`: Sends a response with status code `400`.
-5. `unauthorized(data = null, contentType = null)`: Sends a response with status code `401`.
-6. `forbidden(data = null, contentType = null)`: Sends a response with status code `403`.
-7. `internalServerError(data = null, contentType = null)`: Sends a response with status code `500`.
+
+##### success(data = null, contentType = null)
+Sends a response with status code `200`.
+
+##### created(data = null, contentType = null)
+Sends a response with status code `201`.
+
+##### notFound(data = null, contentType = null)
+Sends a response with status code `404`.
+
+##### badRequest(data = null, contentType = null)
+Sends a response with status code `400`.
+
+##### unauthorized(data = null, contentType = null)
+Sends a response with status code `401`.
+
+##### forbidden(data = null, contentType = null)
+Sends a response with status code `403`.
+
+##### internalServerError(data = null, contentType = null)
+Sends a response with status code `500`.
 
 ## Running your application
 
