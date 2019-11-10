@@ -14,9 +14,7 @@ function Project (name) {
 
   this.folders = [
     'src/controllers',
-    'src/middlewares',
-    'src/models',
-    'src/database/migrations'
+    'src/middlewares'
   ]
 
   this.files = [

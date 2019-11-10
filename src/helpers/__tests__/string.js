@@ -45,28 +45,4 @@ describe('Test string helper functions', () => {
       expect(string.validateClassname('CamelCase007')).toEqual(true)
     })
   })
-
-  describe('Test validateTablename()', () => {
-    it('should throw an error if database name contains illegal characters', () => {
-      expect(() =>
-        string.validateTablename('table&*()8789&*(*&^')
-      ).toThrow('Database names can only contain characters a-z, A-Z, 0-9, _ and $')
-    })
-
-    it('should throw an error if database starts with a number', () => {
-      expect(() =>
-        string.validateTablename('007blogs')
-      ).toThrow('Database names can only start with a-z, A-Z, $ or _. Numbers are not allowed.')
-    })
-
-    it('should return true if database name is valid', () => {
-      expect(string.validateTablename('users_blogs')).toEqual(true)
-      expect(string.validateTablename('$users_blogs')).toEqual(true)
-      expect(string.validateTablename('_users_blogs')).toEqual(true)
-      expect(string.validateTablename('users_blogs$')).toEqual(true)
-      expect(string.validateTablename('users_blogs1')).toEqual(true)
-      expect(string.validateTablename('top007users')).toEqual(true)
-      expect(string.validateTablename('topusers007')).toEqual(true)
-    })
-  })
 })

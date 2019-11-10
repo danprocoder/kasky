@@ -20,13 +20,3 @@ exports.validateClassname = function (name) {
 
   return true
 }
-
-exports.validateTablename = function (name) {
-  if (name.match(/[^a-zA-Z0-9_$]/)) {
-    throw new Error('Database names can only contain characters a-z, A-Z, 0-9, _ and $')
-  } else if (/^[0-9]/.test(name)) {
-    throw new Error('Database names can only start with a-z, A-Z, $ or _. Numbers are not allowed.')
-  }
-
-  return true
-}

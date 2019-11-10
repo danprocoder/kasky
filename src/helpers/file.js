@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const glob = require('glob')
+const os = require('os')
 
 /**
  * Deletes a directory with all it's content inside recursively.
@@ -39,8 +40,28 @@ function readString (filepath) {
   return fs.readFileSync(filepath, { encoding: 'utf-8' })
 }
 
+/**
+ * Creates temporary cache directory.
+ *
+ * @return {Promise<string>}
+ */
+function createCacheDir (...folders) {
+  return new Promise((resolve, reject) => {
+    const tmpDir = path.join(os.tmpdir(), 'pretty-api', ...folders)
+
+    fs.mkdir(tmpDir, { recursive: true }, (err) => {
+      if (!err) {
+        resolve(tmpDir)
+      } else {
+        reject(err)
+      }
+    })
+  })
+}
+
 module.exports = {
   deleteDir,
   matches,
-  readString
+  readString,
+  createCacheDir
 }
