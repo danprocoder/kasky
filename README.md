@@ -50,19 +50,6 @@ class MyFirstController {}
 export default MyFirstController;
 ```
 
-After creating a controller class, ensure to add your controller class to `app.js` class
-in your `./src` folder as shown below.
-
-```javascript
-import MyFirstController from './controllers/MyFirstController'
-
-export default {
-  controllers: [
-    MyFirstController
-  ]
-};
-```
-
 
 ## Define Routes
 ```javascript
@@ -70,7 +57,6 @@ import { Controller, Route } from 'kasky';
 
 @Controller()
 class MyFirstController {
-  
   @Route.Post('/api/blog')
   createBlog(req, res) {
     res.created('Route to create blog');

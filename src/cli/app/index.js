@@ -1,8 +1,6 @@
 const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
-const os = require('os')
-const packageJson = require('../../helpers/package')
 const appLoader = require('../../core/app-loader')
 const server = require('../../core/server')
 const config = require('../../core/config')
@@ -11,6 +9,7 @@ const project = require('./project')
 const env = require('../../helpers/env')
 const cleanUp = require('../../helpers/clean-up')
 const compilers = require('../../helpers/compilers')
+const fileHelper = require('../../helpers/file')
 
 /**
  * @return {string} Returns the absolute path to the application's source files.
@@ -18,29 +17,6 @@ const compilers = require('../../helpers/compilers')
 function getAppRootDir () {
   const rootDir = config.get('rootDir') || 'src'
   return path.join(process.cwd(), rootDir)
-}
-
-/**
- * @return {Promise<string>}
- */
-function createAppTempBuildDir () {
-  return new Promise((resolve, reject) => {
-    const appPackage = require(path.join(process.cwd(), 'package.json'))
-
-    const tmpDir = path.join(
-      os.tmpdir(),
-      packageJson.name,
-      appPackage.name,
-      'build'
-    )
-    fs.mkdir(tmpDir, { recursive: true }, (err) => {
-      if (!err) {
-        resolve(tmpDir)
-      } else {
-        reject(err)
-      }
-    })
-  })
 }
 
 /**
@@ -97,7 +73,12 @@ function beforeServer (envType) {
     })
   }
 
-  return createAppTempBuildDir()
+  // Create a temporary build folder for test and development mode.
+  const appPackage = require(path.join(process.cwd(), 'package.json'))
+  return fileHelper.createCacheDir(
+    appPackage.name,
+    'build'
+  )
     .then((tmpDir) => {
       cleanUp.addDir(tmpDir)
 
@@ -159,9 +140,10 @@ exports.process = function (command, args) {
       const envType = env.getCurrentEnvironment()
 
       beforeServer(envType)
-        .then((buildDir) => {
-          const app = appLoader.loadApp(buildDir)
-
+        .then((buildDir) =>
+          appLoader.loadApp(path.join(buildDir, config.get('controllersPath')))
+        )
+        .then(() => {
           cli.log('Starting server...')
 
           let port = cli.extractParam(args, 'port')
@@ -172,11 +154,7 @@ exports.process = function (command, args) {
             .start((options) => {
               cli.log('Server running at',
                 `${chalk.green(`127.0.0.1:${options.port}`)}.`,
-                'Use Ctrl + C to stop server.')
-
-              if (typeof app.default.onStart === 'function') {
-                app.default.onStart()
-              }
+                'Use Ctrl + C to stop the server.')
             })
         })
         .catch((error) => {

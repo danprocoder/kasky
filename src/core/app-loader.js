@@ -1,13 +1,21 @@
 const path = require('path')
+const fileHelper = require('../helpers/file')
 
 /**
  * Load user's app.
  *
- * @param {string} projectDir Full absolute path to where to find app.js in the build directory.
+ * @param {string} controllersPath The directory to where the controllers are stored.
  */
-function loadApp (projectDir) {
-  // Load app.js
-  return require(path.join(projectDir, 'app'))
+function loadApp (controllersPath) {
+  return new Promise(resolve => {
+    fileHelper.matches(path.join(controllersPath, '**', '*.js'), (files) => {
+      files.forEach((filepath) => {
+        require(filepath)
+      })
+
+      resolve()
+    })
+  })
 }
 
 exports.loadApp = loadApp
