@@ -26,11 +26,22 @@ The above command will create a new folder named `your_project_name` in the curr
 |  |__src
 |  |  |__middlewares
 |  |  |__controllers
-|  |  |__app.js
 |  |__jsconfig.json
 |  |__.gitignore
 |  |__package.json
 |  |__app.config.json
+```
+
+Next step is to install your dependencies
+
+Using npm:
+```bash
+npm i
+```
+
+Using yarn:
+```bash
+yarn
 ```
 
 ## Create a controller

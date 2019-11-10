@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "%{kasky} build",
-    "dev": "%{kasky} start-server",
-    "start": "%{kasky} start-server --prod"
+    "build": "%{framework} build",
+    "dev": "%{framework} start-server",
+    "start": "%{framework} start-server --prod"
   },
   "license": "MIT",
   "dependencies": {
