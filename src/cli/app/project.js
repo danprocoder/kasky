@@ -36,10 +36,6 @@ function Project (name) {
       template: 'app.config.template.json'
     },
     {
-      target: 'src/app.js',
-      template: 'src/app.template'
-    },
-    {
       target: '.gitignore',
       template: '.gitignore.template'
     }
