@@ -8,6 +8,7 @@ const cli = require('../../../helpers/cli')
 const packageJson = require('../../../helpers/package')
 
 const testConfig = {
+  rootDir: '/',
   middlewaresPath: '/path/to/middlewares',
   controllersPath: '/path/to/controllers'
 }

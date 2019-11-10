@@ -1,16 +1,14 @@
 const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
-const os = require('os')
-const packageJson = require('../../helpers/package')
-const appLoader = require('../../core/app-loader')
 const server = require('../../core/server')
 const config = require('../../core/config')
 const cli = require('../../helpers/cli')
 const project = require('./project')
 const env = require('../../helpers/env')
 const cleanUp = require('../../helpers/clean-up')
-const compilers = require('../../helpers/compilers')
+const compilerFactory = require('../../helpers/compilers')
+const fileHelper = require('../../helpers/file')
 
 /**
  * @return {string} Returns the absolute path to the application's source files.
@@ -18,29 +16,6 @@ const compilers = require('../../helpers/compilers')
 function getAppRootDir () {
   const rootDir = config.get('rootDir') || 'src'
   return path.join(process.cwd(), rootDir)
-}
-
-/**
- * @return {Promise<string>}
- */
-function createAppTempBuildDir () {
-  return new Promise((resolve, reject) => {
-    const appPackage = require(path.join(process.cwd(), 'package.json'))
-
-    const tmpDir = path.join(
-      os.tmpdir(),
-      packageJson.name,
-      appPackage.name,
-      'build'
-    )
-    fs.mkdir(tmpDir, { recursive: true }, (err) => {
-      if (!err) {
-        resolve(tmpDir)
-      } else {
-        reject(err)
-      }
-    })
-  })
 }
 
 /**
@@ -53,7 +28,7 @@ function createAppTempBuildDir () {
  */
 function runBuild (src, dst, production = false) {
   const language = config.get('language') || 'javascript'
-  const Compiler = compilers.getLanguageCompiler(language)
+  const Compiler = compilerFactory.getLanguageCompiler(language)
   if (Compiler === null) {
     throw new Error(`No compiler found for ${language}`)
   }
@@ -63,7 +38,15 @@ function runBuild (src, dst, production = false) {
     compilerOptions.minify = true
   }
 
-  return new Compiler(compilerOptions).compile(src, dst).then(() => dst)
+  return new Compiler(compilerOptions)
+    .compile(src, dst)
+    .then(() => {
+      // Insert loader file.
+      const loader = fileHelper.readString(path.join(__dirname, '/template/loader'))
+      fs.writeFileSync(path.join(dst, 'loader.js'), loader)
+
+      return dst
+    })
 }
 
 /**
@@ -97,7 +80,12 @@ function beforeServer (envType) {
     })
   }
 
-  return createAppTempBuildDir()
+  // Create a temporary build folder for test and development mode.
+  const appPackage = require(path.join(process.cwd(), 'package.json'))
+  return fileHelper.createCacheDir(
+    appPackage.name,
+    'build'
+  )
     .then((tmpDir) => {
       cleanUp.addDir(tmpDir)
 
@@ -114,11 +102,11 @@ function beforeServer (envType) {
     })
     .then((buildDir) => {
       // Create symlinks for project's node modules
-      fs.symlinkSync(
-        path.join(process.cwd(), 'node_modules'),
-        path.join(buildDir, 'node_modules'),
-        'dir'
-      )
+      const linkTo = path.join(process.cwd(), 'node_modules')
+      const linkPath = path.join(buildDir, 'node_modules')
+      if (!fs.existsSync(linkPath) && fs.existsSync(linkTo)) {
+        fs.symlinkSync(linkTo, linkPath, 'dir')
+      }
 
       return buildDir
     })
@@ -160,8 +148,12 @@ exports.process = function (command, args) {
 
       beforeServer(envType)
         .then((buildDir) => {
-          const app = appLoader.loadApp(buildDir)
+          const appLoader = require(`${buildDir}/loader.js`)
 
+          const controllersPath = config.get('controllersPath')
+          return appLoader.load(path.join(buildDir, controllersPath))
+        })
+        .then(() => {
           cli.log('Starting server...')
 
           let port = cli.extractParam(args, 'port')
@@ -172,11 +164,7 @@ exports.process = function (command, args) {
             .start((options) => {
               cli.log('Server running at',
                 `${chalk.green(`127.0.0.1:${options.port}`)}.`,
-                'Use Ctrl + C to stop server.')
-
-              if (typeof app.default.onStart === 'function') {
-                app.default.onStart()
-              }
+                'Use Ctrl + C to stop the server.')
             })
         })
         .catch((error) => {

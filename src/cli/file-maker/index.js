@@ -26,7 +26,7 @@ module.exports = {
     string.validateClassname(className)
 
     const fileName = `${string.camelCaseToFilename(className)}.js`
-    const controllersPath = path.join(config.get('controllersPath'), subDir)
+    const controllersPath = path.join(config.get('rootDir'), config.get('controllersPath'), subDir)
     fs.mkdirSync(controllersPath, { recursive: true })
 
     cli.log('Generating', path.join(controllersPath, fileName))
@@ -58,7 +58,7 @@ module.exports = {
 
     string.validateClassname(className)
 
-    const middlewaresPath = path.join(config.get('middlewaresPath'), subDir)
+    const middlewaresPath = path.join(config.get('rootDir'), config.get('middlewaresPath'), subDir)
     fs.mkdirSync(middlewaresPath, { recursive: true })
 
     const targetFilePath = path.join(
