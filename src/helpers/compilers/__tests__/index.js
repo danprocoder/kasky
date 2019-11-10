@@ -45,7 +45,9 @@ describe('Test compiler base constructor', () => {
       )
   })
 
-  afterAll(() => jest.restoreAllMocks())
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
 
   it('should set the extensions and options', () => {
     expect(compiler._fileExtensions).toEqual(['js', 'jsx'])
@@ -102,6 +104,7 @@ describe('Test compiler base constructor', () => {
 
     afterAll(() => {
       lstatSyncSpy.mockRestore()
+      jest.clearAllMocks()
     })
 
     it('should set _srcType to file', () => {
@@ -135,8 +138,6 @@ describe('Test compiler base constructor', () => {
 
   describe('Test feature to compile a directory', () => {
     beforeAll(() => {
-      jest.clearAllMocks()
-
       lstatSyncSpy = jest.spyOn(fs, 'lstatSync')
       lstatSyncSpy.mockImplementation(() => {
         return { isDirectory: () => true }
@@ -185,6 +186,7 @@ describe('Test compiler base constructor', () => {
     })
 
     it('should call fs.writeFileSync 3 times to write the outputs for the 3 files', () => {
+      expect(fs.writeFileSync).toHaveBeenCalledTimes(3)
       expect(fs.writeFileSync.mock.calls).toEqual([
         ['/output/path/source1.js', 'class Source1 -> ()'],
         ['/output/path/sub/source2.js', 'class Source2 -> ()'],

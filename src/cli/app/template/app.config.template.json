@@ -1,6 +1,6 @@
 {
   "language": "javascript",
   "rootDir": "./src",
-  "controllersPath": "{rootDir}/controllers",
-  "middlewaresPath": "{rootDir}/middlewares"
+  "controllersPath": "./controllers",
+  "middlewaresPath": "./middlewares"
 }

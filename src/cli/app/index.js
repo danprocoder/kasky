@@ -1,14 +1,13 @@
 const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
-const appLoader = require('../../core/app-loader')
 const server = require('../../core/server')
 const config = require('../../core/config')
 const cli = require('../../helpers/cli')
 const project = require('./project')
 const env = require('../../helpers/env')
 const cleanUp = require('../../helpers/clean-up')
-const compilers = require('../../helpers/compilers')
+const compilerFactory = require('../../helpers/compilers')
 const fileHelper = require('../../helpers/file')
 
 /**
@@ -29,7 +28,7 @@ function getAppRootDir () {
  */
 function runBuild (src, dst, production = false) {
   const language = config.get('language') || 'javascript'
-  const Compiler = compilers.getLanguageCompiler(language)
+  const Compiler = compilerFactory.getLanguageCompiler(language)
   if (Compiler === null) {
     throw new Error(`No compiler found for ${language}`)
   }
@@ -39,7 +38,15 @@ function runBuild (src, dst, production = false) {
     compilerOptions.minify = true
   }
 
-  return new Compiler(compilerOptions).compile(src, dst).then(() => dst)
+  return new Compiler(compilerOptions)
+    .compile(src, dst)
+    .then(() => {
+      // Insert loader file.
+      const loader = fileHelper.readString(path.join(__dirname, '/template/loader'))
+      fs.writeFileSync(path.join(dst, 'loader.js'), loader)
+
+      return dst
+    })
 }
 
 /**
@@ -95,11 +102,11 @@ function beforeServer (envType) {
     })
     .then((buildDir) => {
       // Create symlinks for project's node modules
-      fs.symlinkSync(
-        path.join(process.cwd(), 'node_modules'),
-        path.join(buildDir, 'node_modules'),
-        'dir'
-      )
+      const linkTo = path.join(process.cwd(), 'node_modules')
+      const linkPath = path.join(buildDir, 'node_modules')
+      if (!fs.existsSync(linkPath) && fs.existsSync(linkTo)) {
+        fs.symlinkSync(linkTo, linkPath, 'dir')
+      }
 
       return buildDir
     })
@@ -140,9 +147,12 @@ exports.process = function (command, args) {
       const envType = env.getCurrentEnvironment()
 
       beforeServer(envType)
-        .then((buildDir) =>
-          appLoader.loadApp(path.join(buildDir, config.get('controllersPath')))
-        )
+        .then((buildDir) => {
+          const appLoader = require(`${buildDir}/loader.js`)
+
+          const controllersPath = config.get('controllersPath')
+          return appLoader.load(path.join(buildDir, controllersPath))
+        })
         .then(() => {
           cli.log('Starting server...')
 
