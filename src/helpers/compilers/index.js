@@ -81,7 +81,7 @@ exports.createCompilerClass = function (fileExtensions) {
           this._compileCurrentFile()
         })
     } else {
-      this._promise.resolve()
+      this._promise.resolve(this._dst)
     }
   }
 

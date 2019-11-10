@@ -2,8 +2,8 @@ const http = require('http')
 const url = require('url')
 const os = require('os')
 const routeResolver = require('./route/resolver')
-const Request = require('../helpers/request')
-const Response = require('../helpers/response')
+const Request = require('./request')
+const Response = require('./response')
 const MiddlewareHandler = require('../helpers/middleware-runner')
 
 function Server (config) {

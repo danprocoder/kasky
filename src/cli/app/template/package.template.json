@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pretty-api build",
-    "start": "pretty-api start-server"
+    "build": "%{kasky} build",
+    "dev": "%{kasky} start-server",
+    "start": "%{kasky} start-server --prod"
   },
   "license": "MIT",
   "dependencies": {

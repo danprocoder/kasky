@@ -1,63 +1,48 @@
-# pretty-api framework for node.js
+# Kasky framework for node.js
 
 [![CircleCI](https://circleci.com/gh/danprocoder/node-api-framework.svg?style=svg)](https://circleci.com/gh/danprocoder/node-api-framework) [![codecov](https://codecov.io/gh/danprocoder/node-api-framework/branch/development/graph/badge.svg)](https://codecov.io/gh/danprocoder/node-api-framework)
-
-This project is still under development and first version will be published soon.
 
 ## Installation
 Using npm:
 ```bash
-npm install -g pretty-api
+npm install -g kasky
 ```
 
 Using yarn:
 ```bash
-yarn add -g pretty-api
+yarn add -g kasky
 ```
 
 
 ## Create a new Project
 ```bash
-pretty-api init your_project_name
+kasky init your_project_name
 ```
 
-The above command will create a new folder named `your_project_name` in the current working directory with some files and folders created inside it. Below is what the folder structure of the new created `your_project_name` folder will look like.
+The above command will create a new folder named `your_project_name` in the current working directory with some files and folders created inside it. Below is what the folder structure of the new created `your_project_name` folder will look like:
 
 ```text
-|__src
-| |__database
-| | |__migrations
-| |__middlewares
-| |__models
-| |__controllers
-| |__app.js
-|__jsconfig.json
-|__.gitignore
-|__package.json
-|__app.config.json
-```
-
-#### Work with other programming languages.
-To create a project using the [typescript](https://www.typescriptlang.org/) programming language, use:  
-```bash
-pretty-api init your_project_name --typescript
-```
-
-To create a project using the [coffee script](https://coffeescript.org/) programming language, use:  
-```bash
-pretty-api init your_project_name --coffee-script
+|__your_project_name
+|  |__src
+|  |  |__middlewares
+|  |  |__controllers
+|  |  |__app.js
+|  |__jsconfig.json
+|  |__.gitignore
+|  |__package.json
+|  |__app.config.json
 ```
 
 ## Create a controller
 The follow command will create a new controller class file.
 
 ```bash
-pretty-api make:controller --name=ControllerClassName
+kasky make:controller --name=ControllerClassName
 ```
 
 An example controller class.
 ```javascript
-import { Controller } from 'pretty-api';
+import { Controller } from 'kasky';
 
 @Controller()
 class MyFirstController {}
@@ -65,10 +50,23 @@ class MyFirstController {}
 export default MyFirstController;
 ```
 
+After creating a controller class, ensure to add your controller class to `app.js` class
+in your `./src` folder as shown below.
+
+```javascript
+import MyFirstController from './controllers/MyFirstController'
+
+export default {
+  controllers: [
+    MyFirstController
+  ]
+};
+```
+
 
 ## Define Routes
 ```javascript
-import { Controller, Route } from 'pretty-api';
+import { Controller, Route } from 'kasky';
 
 @Controller()
 class MyFirstController {
@@ -87,28 +85,45 @@ class MyFirstController {
 export default MyFirstController;
 ```
 
+#### The Request Object
+The request object contains the following properties.
+1. `header(key)`: Returns the value for a HTTP request header sent with key `key`.
+2. `query(key)`: The value for a url query with key `key`.
+3. `param(key)`: Returns the value for a url param with key `key`.
+4. `body(key)`: Returns the value for a request body parameter with key `key`.
 
-## Create a model class.
-The follow command will create a model class file.
+#### The Response Object
+The response object contains the following method.
 
+1. `header(key, value)`: Sets the HTTP header. Returns the response object.
+2. `send(statusCode, data = null, contentType = null)`
+
+The following are helper methods in the response object.
+1. `success(data = null, contentType = null)`: Sends a response with status code `200`.
+2. `created(data = null, contentType = null)`: Sends a response with status code `201`.
+3. `notFound(data = null, contentType = null)`: Sends a response with status code `404`.
+4. `badRequest(data = null, contentType = null)`: Sends a response with status code `400`.
+5. `unauthorized(data = null, contentType = null)`: Sends a response with status code `401`.
+6. `forbidden(data = null, contentType = null)`: Sends a response with status code `403`.
+7. `internalServerError(data = null, contentType = null)`: Sends a response with status code `500`.
+
+## Running your application
+
+#### Development
+To run your app in development mode. Use
 ```bash
-pretty-api make:model --name=YourModelClassName --table=your_database_table_name
+npm run dev
 ```
 
-Example:
+#### Production
+To run your app in production mode, Ensure to build the app first using:
 
 ```bash
-pretty-api make:model --name=UsersModel --table=users
+npm build
 ```
 
-The following file will be generated.
-```javascript
-import { Model } from 'pretty-api';
+Then start the production server using:
 
-@Model({
-  table: 'your_database_table_name'
-})
-class UserModel {}
-
-export default UserModel;
+```bash
+npm start
 ```

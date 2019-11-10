@@ -1,6 +1,0 @@
-import { Model } from '%{package}';
-
-@Model(%{decoratorData})
-class %{name} {}
-
-export default %{name};

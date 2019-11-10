@@ -1,13 +1,17 @@
 {
-  "name": "pretty-api",
+  "name": "kasky",
   "version": "1.0.0",
-  "description": "",
+  "description": "A light weight, easy to use web framework for node.js",
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage --runInBand --config=jest.config.json",
     "test:clear-cache": "jest --clearCache",
     "lint:check": "eslint ./src",
     "lint:fix": "eslint --fix ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danprocoder/kasky"
   },
   "author": "Daniel Austin",
   "license": "ISC",
@@ -22,10 +26,8 @@
     "@babel/runtime": "^7.6.3",
     "babel-preset-minify": "^0.5.1",
     "chalk": "^2.4.2",
-    "cli-highlight": "^2.1.1",
     "coffeescript": "^2.4.1",
     "glob": "^7.1.5",
-    "mysql2": "^2.0.0",
     "typescript": "^3.6.4"
   },
   "bin": "src/cli/index.js",

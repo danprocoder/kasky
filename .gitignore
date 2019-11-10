@@ -7,3 +7,5 @@ package-lock.json
 coverage
 
 .jest-cache
+
+yarn.lock

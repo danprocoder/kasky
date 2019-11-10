@@ -7,24 +7,10 @@ const appLoader = require('../../core/app-loader')
 const server = require('../../core/server')
 const config = require('../../core/config')
 const cli = require('../../helpers/cli')
-const fileHelper = require('../../helpers/file')
 const project = require('./project')
 const env = require('../../helpers/env')
+const cleanUp = require('../../helpers/clean-up')
 const compilers = require('../../helpers/compilers')
-
-const cleanUp = {
-  filesToCleanUp: [],
-
-  addDir (pathToClean) {
-    this.filesToCleanUp.push(pathToClean)
-  },
-
-  cleanUp () {
-    this.filesToCleanUp.forEach((dir) => {
-      fileHelper.deleteDir(dir)
-    })
-  }
-}
 
 /**
  * @return {string} Returns the absolute path to the application's source files.
