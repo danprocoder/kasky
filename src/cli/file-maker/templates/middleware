@@ -2,11 +2,9 @@ import { Middleware } from 'kasky';
 
 @Middleware()
 class %{name} {
-
   handle(req, res, next) {
     next();
   }
-
 }
 
 export default %{name};
