@@ -1,151 +1,27 @@
-# Kasky framework for node.js
+# Kasky
 
-[![CircleCI](https://circleci.com/gh/danprocoder/kasky.svg?style=svg)](https://circleci.com/gh/danprocoder/kasky) [![codecov](https://codecov.io/gh/danprocoder/kasky/branch/master/graph/badge.svg)](https://codecov.io/gh/danprocoder/kasky)
+A light weight, easy to use web framework for [node](http://nodejs.org)
+
+[![CircleCI](https://circleci.com/gh/danprocoder/kasky.svg?style=svg)](https://circleci.com/gh/danprocoder/kasky)
+[![codecov](https://codecov.io/gh/danprocoder/kasky/branch/master/graph/badge.svg)](https://codecov.io/gh/danprocoder/kasky)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://jest.io)
+[![NPM Version](https://img.shields.io/npm/v/kasky)](https://www.npmjs.com/package/kasky)
+[![NPM Downloads](https://img.shields.io/npm/dm/kasky)](https://www.npmjs.com/package/kasky)
+
+## Requirements
+* [Node](http://nodejs.org) >= 10
 
 ## Installation
 Using npm:
 ```bash
-npm install -g kasky
+$ npm install -g kasky
 ```
 
 Using yarn:
 ```bash
-yarn add -g kasky
+$ yarn global add kasky
 ```
 
 
-## Create a new Project
-```bash
-kasky init your_project_name
-```
-
-The above command will create a new folder named `your_project_name` in the current working directory with some files and folders created inside it. Below is what the folder structure of the new created `your_project_name` folder will look like:
-
-```text
-|__your_project_name
-|  |__src
-|  |  |__middlewares
-|  |  |__controllers
-|  |__jsconfig.json
-|  |__.gitignore
-|  |__package.json
-|  |__app.config.json
-```
-
-Next step is to install your dependencies
-
-Using npm:
-```bash
-npm i
-```
-
-Using yarn:
-```bash
-yarn
-```
-
-## Create a controller
-The follow command will create a new controller class file.
-
-```bash
-kasky make:controller --name=ControllerClassName
-```
-
-An example controller class.
-```javascript
-import { Controller } from 'kasky';
-
-@Controller()
-class MyFirstController {}
-
-export default MyFirstController;
-```
-
-
-## Define Routes
-```javascript
-import { Controller, Route } from 'kasky';
-
-@Controller()
-class MyFirstController {
-  @Route.Post('/api/blog')
-  createBlog(req, res) {
-    res.created('Route to create blog');
-  }
-  
-  @Route.Get('/api/blog')
-  getAllBlogs(req, res) {
-    res.success('Route to get all blogs');
-  }
-}
-
-export default MyFirstController;
-```
-
-#### The Request Object
-The request object contains the following properties.
-
-##### header(key)
-Returns the value for a HTTP request header sent with key `key`.
-
-##### query(key)
-The value for a url query with key `key`.
-
-##### param(key)
-Returns the value for a url param with key `key`.
-
-##### body(key)
-Returns the value for a request body parameter with key `key`.
-
-#### The Response Object
-The response object contains the following method.
-
-##### header(key, value)
-Sets the HTTP header. Returns the response object.
-
-##### send(statusCode, data = null, contentType = null)
-Sends a response to the client
-
-The following are helper methods in the response object.
-
-##### success(data = null, contentType = null)
-Sends a response with status code `200`.
-
-##### created(data = null, contentType = null)
-Sends a response with status code `201`.
-
-##### notFound(data = null, contentType = null)
-Sends a response with status code `404`.
-
-##### badRequest(data = null, contentType = null)
-Sends a response with status code `400`.
-
-##### unauthorized(data = null, contentType = null)
-Sends a response with status code `401`.
-
-##### forbidden(data = null, contentType = null)
-Sends a response with status code `403`.
-
-##### internalServerError(data = null, contentType = null)
-Sends a response with status code `500`.
-
-## Running your application
-
-#### Development
-To run your app in development mode. Use
-```bash
-npm run dev
-```
-
-#### Production
-To run your app in production mode, Ensure to build the app first using:
-
-```bash
-npm build
-```
-
-Then start the production server using:
-
-```bash
-npm start
-```
+## Documentation
+Read documentation [here](https://danprocoder.github.io/kasky)
