@@ -33,7 +33,7 @@ exports.createCompilerClass = function (fileExtensions) {
         this._srcType = SRC_TYPE_DIR
 
         try {
-          const dir = src.concat('/**/*.', '@(', this._fileExtensions.join('|'), ')')
+          const dir = src.concat('/**/*')
           file.matches(dir, files => {
             resolve(files)
           })
@@ -69,17 +69,30 @@ exports.createCompilerClass = function (fileExtensions) {
   BaseCompiler.prototype._compileCurrentFile = function () {
     if (this._i < this._files.length) {
       const filepath = this._files[this._i]
-      const code = file.readString(filepath)
-      this.handle(code)
-        .then(result => {
-          const outputPath = this._getOutputFilePath()
-          // Create output directory if it doesn't exists
-          fs.mkdirSync(path.dirname(outputPath), { recursive: true })
-          fs.writeFileSync(outputPath, result)
 
-          this._i++
-          this._compileCurrentFile()
-        })
+      // Create output directory if it doesn't exists.
+      const outputPath = this._getOutputFilePath()
+      fs.mkdirSync(path.dirname(outputPath), { recursive: true })
+
+      // If file is compilable
+      const extensionPattern = new RegExp(`\\.(${this._fileExtensions.join('|')})$`)
+      if (extensionPattern.test(filepath)) {
+        const code = file.readString(filepath)
+        this.handle(code)
+          .then(result => {
+            fs.writeFileSync(outputPath, result)
+
+            this._i++
+            this._compileCurrentFile()
+          })
+      } else {
+        console.log(filepath, outputPath)
+        file.copyFile(filepath, outputPath)
+          .then(() => {
+            this._i++
+            this._compileCurrentFile()
+          })
+      }
     } else {
       this._promise.resolve(this._dst)
     }
