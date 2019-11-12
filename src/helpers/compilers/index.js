@@ -36,7 +36,7 @@ exports.createCompilerClass = function (fileExtensions) {
           const dir = src.concat('/**/*')
           file.matches(dir, files => {
             resolve(files)
-          })
+          }, { nodir: true })
         } catch (e) {
           reject(e)
         }

@@ -28,8 +28,8 @@ function deleteDir (dir) {
   fs.rmdirSync(dir)
 }
 
-function matches (pattern, callback) {
-  glob(pattern, null, (err, matches) => {
+function matches (pattern, callback, globOptions = null) {
+  glob(pattern, globOptions, (err, matches) => {
     if (err) throw new Error(err)
 
     callback(matches)
