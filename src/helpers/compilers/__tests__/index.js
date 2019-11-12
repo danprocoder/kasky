@@ -5,7 +5,11 @@ const file = require('../../../helpers/file')
 const sourceFiles = {
   '/path/to/3files/source1.js': 'class Source1 {}',
   '/path/to/3files/sub/source2.js': 'class Source2 {}',
-  '/path/to/3files/sub1/sub2/source3.js': 'class Source3 {}'
+  '/path/to/3files/sub1/sub2/source3.js': 'class Source3 {}',
+  '/path/to/3files/assets/path/img.svg': '<svg />',
+  '/path/to/3files/assets/path/fonts/img2.svg': '<svg />',
+  '/path/to/3files/config/config.yml': '- config',
+  '/path/to/3files/config/config.xml': '<?xml version="1.0" ?>'
 }
 
 const results = {
@@ -35,12 +39,19 @@ describe('Test compiler base constructor', () => {
     readFileSpy = jest.spyOn(file, 'readString')
     readFileSpy.mockImplementation((filename) => sourceFiles[filename])
 
+    jest.spyOn(file, 'copyFile').mockImplementation(() => Promise.resolve())
+
     jest.spyOn(file, 'matches')
       .mockImplementation((pattern, callback) =>
         callback([
           '/path/to/3files/source1.js',
           '/path/to/3files/sub/source2.js',
-          '/path/to/3files/sub1/sub2/source3.js'
+          '/path/to/3files/sub1/sub2/source3.js',
+          // Some none compilable files
+          '/path/to/3files/assets/path/img.svg',
+          '/path/to/3files/assets/path/fonts/img.svg',
+          '/path/to/3files/config/config.yml',
+          '/path/to/3files/config/config.xml'
         ])
       )
   })
@@ -68,7 +79,20 @@ describe('Test compiler base constructor', () => {
       ).resolves.toEqual(['/path/to/3files/source1.js'])
     })
 
-    it('should set files to an array of 3 filepaths if src is a directory', () => {
+    it('should try to find files using the right pattern', () => {
+      lstatSyncSpy = jest.spyOn(fs, 'lstatSync')
+      lstatSyncSpy.mockImplementation(() => {
+        return { isDirectory: () => true }
+      })
+
+      return compiler._loadFiles('/path/to/3files')
+        .then(files => {
+          expect(file.matches.mock.calls[0][0]).toEqual('/path/to/3files/**/*')
+          expect(file.matches.mock.calls[0][2]).toEqual({ nodir: true })
+        })
+    })
+
+    it('should set files to an array of 7 filepaths if src is a directory', () => {
       lstatSyncSpy = jest.spyOn(fs, 'lstatSync')
       lstatSyncSpy.mockImplementation(() => {
         return { isDirectory: () => true }
@@ -76,16 +100,16 @@ describe('Test compiler base constructor', () => {
 
       const fn = () => {
         return compiler._loadFiles('/path/to/3files')
-          .then(files => {
-            expect(file.matches.mock.calls[0][0]).toEqual('/path/to/3files/**/*.@(js|jsx)')
-            return files
-          })
       }
 
       return expect(fn()).resolves.toEqual([
         '/path/to/3files/source1.js',
         '/path/to/3files/sub/source2.js',
-        '/path/to/3files/sub1/sub2/source3.js'
+        '/path/to/3files/sub1/sub2/source3.js',
+        '/path/to/3files/assets/path/img.svg',
+        '/path/to/3files/assets/path/fonts/img.svg',
+        '/path/to/3files/config/config.yml',
+        '/path/to/3files/config/config.xml'
       ])
     })
   })
@@ -154,11 +178,28 @@ describe('Test compiler base constructor', () => {
       expect(compiler._files).toEqual([
         '/path/to/3files/source1.js',
         '/path/to/3files/sub/source2.js',
-        '/path/to/3files/sub1/sub2/source3.js'
+        '/path/to/3files/sub1/sub2/source3.js',
+        '/path/to/3files/assets/path/img.svg',
+        '/path/to/3files/assets/path/fonts/img.svg',
+        '/path/to/3files/config/config.yml',
+        '/path/to/3files/config/config.xml'
       ])
     })
 
-    it('should call handle() method 3 times', () => {
+    it('should call fs.mkdirSync to create the output dirs for the 3 files', () => {
+      expect(fs.mkdirSync).toHaveBeenCalledTimes(7)
+      expect(fs.mkdirSync.mock.calls).toEqual([
+        ['/output/path', { recursive: true }],
+        ['/output/path/sub', { recursive: true }],
+        ['/output/path/sub1/sub2', { recursive: true }],
+        ['/output/path/assets/path', { recursive: true }],
+        ['/output/path/assets/path/fonts', { recursive: true }],
+        ['/output/path/config', { recursive: true }],
+        ['/output/path/config', { recursive: true }]
+      ])
+    })
+
+    it('should call handle() method 3 times to compile only compilable files.', () => {
       expect(compiler.handle).toHaveBeenCalledTimes(3)
       expect(compiler.handle.mock.calls).toEqual([
         ['class Source1 {}'],
@@ -176,21 +217,21 @@ describe('Test compiler base constructor', () => {
       ])
     })
 
-    it('should call fs.mkdirSync to create the output dirs for the 3 files', () => {
-      expect(fs.mkdirSync).toHaveBeenCalledTimes(3)
-      expect(fs.mkdirSync.mock.calls).toEqual([
-        ['/output/path', { recursive: true }],
-        ['/output/path/sub', { recursive: true }],
-        ['/output/path/sub1/sub2', { recursive: true }]
-      ])
-    })
-
     it('should call fs.writeFileSync 3 times to write the outputs for the 3 files', () => {
       expect(fs.writeFileSync).toHaveBeenCalledTimes(3)
       expect(fs.writeFileSync.mock.calls).toEqual([
         ['/output/path/source1.js', 'class Source1 -> ()'],
         ['/output/path/sub/source2.js', 'class Source2 -> ()'],
         ['/output/path/sub1/sub2/source3.js', 'class Source3 -> ()']
+      ])
+    })
+
+    it('shoudl copy all the non-compilable files', () => {
+      expect(file.copyFile.mock.calls).toEqual([
+        ['/path/to/3files/assets/path/img.svg', '/output/path/assets/path/img.svg'],
+        ['/path/to/3files/assets/path/fonts/img.svg', '/output/path/assets/path/fonts/img.svg'],
+        ['/path/to/3files/config/config.yml', '/output/path/config/config.yml'],
+        ['/path/to/3files/config/config.xml', '/output/path/config/config.xml']
       ])
     })
   })
