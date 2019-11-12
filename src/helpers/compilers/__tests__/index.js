@@ -88,6 +88,7 @@ describe('Test compiler base constructor', () => {
       return compiler._loadFiles('/path/to/3files')
         .then(files => {
           expect(file.matches.mock.calls[0][0]).toEqual('/path/to/3files/**/*')
+          expect(file.matches.mock.calls[0][2]).toEqual({ nodir: true })
         })
     })
 
