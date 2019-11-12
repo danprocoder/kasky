@@ -23,12 +23,20 @@ describe('Test the request object', () => {
     expect(req.header('content-type')).toEqual('application/json')
   })
 
+  it('should return the header object', () => {
+    expect(req.header()).toEqual({ 'content-type': 'application/json' })
+  })
+
   it('should return null if header was not sent by client', () => {
     expect(req.header('unknown-header')).toBeNull()
   })
 
   it('should return value for set url param', () => {
     expect(req.param('section')).toEqual('product')
+  })
+
+  it('should return the param object', () => {
+    expect(req.param()).toEqual({ section: 'product' })
   })
 
   it('should return null if param was not sent', () => {
@@ -44,8 +52,19 @@ describe('Test the request object', () => {
     expect(req.query('name')).toBeNull()
   })
 
+  it('should return the query object', () => {
+    expect(req.query()).toEqual({
+      action: 'update',
+      id: '5'
+    })
+  })
+
   it('should return value of body parameter', () => {
     expect(req.body('name')).toEqual('Product Name')
+  })
+
+  it('should return the body object', () => {
+    expect(req.body()).toEqual({ name: 'Product Name' })
   })
 
   it('should return null if body parameter was not sent', () => {

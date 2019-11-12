@@ -86,7 +86,6 @@ exports.createCompilerClass = function (fileExtensions) {
             this._compileCurrentFile()
           })
       } else {
-        console.log(filepath, outputPath)
         file.copyFile(filepath, outputPath)
           .then(() => {
             this._i++
