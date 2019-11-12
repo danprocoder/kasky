@@ -9,19 +9,35 @@ function Request (req, params, body) {
   this._body = this._parseRequestBody(contentType, body)
 }
 
-Request.prototype.header = function (key) {
+Request.prototype.header = function (key = null) {
+  if (key === null) {
+    return this._headers
+  }
+
   return this._headers[key] || null
 }
 
-Request.prototype.query = function (key) {
+Request.prototype.query = function (key = null) {
+  if (key === null) {
+    return this._query
+  }
+
   return this._query[key] || null
 }
 
-Request.prototype.param = function (key) {
+Request.prototype.param = function (key = null) {
+  if (key === null) {
+    return this._params
+  }
+
   return this._params[key] || null
 }
 
-Request.prototype.body = function (key) {
+Request.prototype.body = function (key = null) {
+  if (key === null) {
+    return this._body
+  }
+
   return typeof this._body === 'object'
     ? (this._body[key] || null)
     : null
