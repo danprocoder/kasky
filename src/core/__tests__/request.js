@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const Request = require('../request')
 
 function createMockNodeRequest (headers, url) {
@@ -69,5 +70,92 @@ describe('Test the request object', () => {
 
   it('should return null if body parameter was not sent', () => {
     expect(req.body('price')).toBeNull()
+  })
+
+  describe('Test authBearer() method', () => {
+    it('should return null if no authorization header was set', () => {
+      const nodeReq = createMockNodeRequest({}, 'some/url/path')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.authBearer()).toBeNull()
+    })
+
+    it('should return null if the format for the authorization header is incorrect', () => {
+      const nodeReq = createMockNodeRequest({
+        authorization: 'user_authorization_token'
+      }, 'some/url/path')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.authBearer()).toBeNull()
+    })
+
+    it('should return the authorization bearer token', () => {
+      const nodeReq = createMockNodeRequest({
+        authorization: 'Bearer user_authorization_token'
+      }, 'some/url/path')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.authBearer()).toEqual('user_authorization_token')
+    })
+  })
+
+  describe('Test authBearerJwtDecode() method', () => {
+    it('should return null if no bearer token was set', () => {
+      const nodeReq = createMockNodeRequest({}, 'some/url/path')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.authBearerJwtDecode('fake_secret')).toBeNull()
+    })
+
+    it('should return null if jwt token is invalid', () => {
+      const nodeReq = createMockNodeRequest({
+        authorization: 'Bearer fake_token'
+      }, 'some/url/path')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.authBearerJwtDecode('fake_secret')).toBeNull()
+    })
+
+    it('should return the decoded jwt payload', () => {
+      const jwtSecret = 'some_secret_key'
+      const token = jwt.sign({ data: 'user_data' }, jwtSecret)
+
+      const nodeReq = createMockNodeRequest({
+        authorization: `Bearer ${token}`
+      }, 'some/url/path')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(
+        req.authBearerJwtDecode(jwtSecret)
+      ).toMatchObject({ data: 'user_data' })
+    })
+  })
+
+  describe('Test headerJwtDecode() method', () => {
+    it('should return null if the header was not set', () => {
+      const nodeReq = createMockNodeRequest({}, '')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.headerJwtDecode('my-token', 'some-secret')).toBeNull()
+    })
+
+    it('should return null if the token is invalid', () => {
+      const nodeReq = createMockNodeRequest({ 'my-token': 'invalid_jwt_token' }, '')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(req.headerJwtDecode('my-token', 'some-secret')).toBeNull()
+    })
+
+    it('should return the decoded jwt payload', () => {
+      const jwtSecret = 'some_secret_key'
+      const token = jwt.sign({ data: 'user_data' }, jwtSecret)
+
+      const nodeReq = createMockNodeRequest({ 'my-token': token }, '')
+      const req = new Request(nodeReq, {}, {})
+
+      expect(
+        req.headerJwtDecode('my-token', 'some_secret_key')
+      ).toMatchObject({ data: 'user_data' })
+    })
   })
 })

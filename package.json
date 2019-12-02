@@ -1,6 +1,6 @@
 {
   "name": "kasky",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A light weight, easy to use web framework for node.js",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "chalk": "^2.4.2",
     "coffeescript": "^2.4.1",
     "glob": "^7.1.5",
+    "jsonwebtoken": "^8.5.1",
     "typescript": "^3.6.4"
   },
   "bin": "src/cli/index.js",

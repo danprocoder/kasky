@@ -1,4 +1,5 @@
 const url = require('url')
+const jwt = require('jsonwebtoken')
 
 function Request (req, params, body) {
   const contentType = req.headers['content-type']
@@ -14,7 +15,50 @@ Request.prototype.header = function (key = null) {
     return this._headers
   }
 
-  return this._headers[key] || null
+  return this._headers[key.toLowerCase()] || null
+}
+
+Request.prototype.headerJwtDecode = function (key, jwtSecret, jwtOptions = {}) {
+  const value = this.header(key)
+  if (!value) {
+    return null
+  }
+
+  try {
+    const decoded = jwt.verify(value, jwtSecret, jwtOptions)
+    return decoded
+  } catch (err) {
+    return null
+  }
+}
+
+Request.prototype.authBearer = function () {
+  const authorization = this.header('authorization')
+  // If header does not exists.
+  if (!authorization) {
+    return null
+  }
+
+  // If authorization header syntax is incorrect.
+  if (!/^bearer .+/i.test(authorization)) {
+    return null
+  }
+
+  return authorization.split(' ')[1].trim()
+}
+
+Request.prototype.authBearerJwtDecode = function (jwtSecret, jwtOptions = {}) {
+  const bearer = this.authBearer()
+  if (!bearer) {
+    return null
+  }
+
+  try {
+    const decoded = jwt.verify(bearer, jwtSecret, jwtOptions)
+    return decoded
+  } catch (err) {
+    return null
+  }
 }
 
 Request.prototype.query = function (key = null) {
