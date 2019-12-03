@@ -14,10 +14,11 @@ function Server (config) {
 Server.prototype._onHttpRequest = function (req, res) {
   // Handle CORS
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Headers', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE')
 
   if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Headers', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE')
+
     res.writeHead(200)
     res.end()
 
